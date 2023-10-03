@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'Italianno';
+    font-style: normal;
+    font-weight: normal;
+    src: url('fonts/Italianno-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Zekton';
+    font-style: normal;
+    font-weight: normal;
+    src: url('fonts/zekton-rg.otf');
+}
+
+$customFont: 'Italianno';   
+
+$primaryFont: Arial, Helvetica, sans-serif;;
+
+$gradient1:-webkit-linear-gradient(270deg, red,  rgb(0, 0, 0));
