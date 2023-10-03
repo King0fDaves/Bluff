@@ -13,7 +13,7 @@
     </div>
 {:else if typeof numToLetter(value) === 'string' }
     <div class="suitContainer col-3-4 row-3-4">
-        <span class="royal  {isTitle ? "titleText":""}" >{numToLetter(value)}</span>
+        <span class="royal  {isTitle ? "titleText":""} {suit === "Diamond" || suit === "Heart" ? "red":""}" >{numToLetter(value)}</span>
     </div>
 {/if}
 
@@ -37,6 +37,10 @@
 
 .flip{
     transform: rotate(180deg);
+}
+
+.red{
+    color: red;
 }
 
 .royal{

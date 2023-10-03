@@ -8,34 +8,37 @@
     import Suit_6 from "$lib/Cards/Card/Suits/Suit_6/+page.svelte";
     import JokerCard from "$lib/Cards/JokerCard/+page.svelte";
     import BackCard from "$lib/Cards/BackCard/+page.svelte";
-    export let size = 1;
-    export let value = 'Joker';
-    export let suit = "Clover";
-    export let colour = "black";
-    export let isBack = true;
+
+    export let card = {
+        value:5,
+        suit:"Diamond",
+        size:1
+    }
+
+    export let isBack = false;
     export let showBorder = true;
     export let isTitle = false;
 
 </script>
 
 
-<div class="Card {isBack ? "Back":""} {showBorder ? "showBorder":""} {value === "Joker" ? "Joker":""}" style="--cardSize:{size};">
+<div class="Card {isBack ? "Back":""} {showBorder ? "showBorder":""} {card.value === "Joker" ? "Joker":""}" style="--cardSize:{card.size};">
 
     {#if isBack}
-        <BackCard size={size} />
+        <BackCard size={card.size} />
 
-    {:else if value !== "Joker" && !isBack}
-        <Side suit={suit} colour={colour} value={value} size={size}/>
-        <Side suit={suit} colour={colour} value={value} size={size} isLeft={true}/>
-        <Suit_1 suit={suit} value={value} />
-        <Suit_2 suit={suit} value={value} />
-        <Suit_3 suit={suit} value={value} />
-        <Suit_4 suit={suit} value={value} />
-        <Suit_5 suit={suit} value={value} />
-        <Suit_6 suit={suit} value={value} isTitle={isTitle}/>
+    {:else if card.value !== "Joker" && !isBack}
+        <Side suit={card.suit}  value={card.value} size={card.size}/>
+        <Side suit={card.suit} value={card.value} size={card.size} isLeft={true}/>
+        <Suit_1 suit={card.suit} value={card.value} />
+        <Suit_2 suit={card.suit} value={card.value} />
+        <Suit_3 suit={card.suit} value={card.value} />
+        <Suit_4 suit={card.suit} value={card.value} />
+        <Suit_5 suit={card.suit} value={card.value} />
+        <Suit_6 suit={card.suit} value={card.value} isTitle={isTitle}/>
 
     {:else if value === "Joker"}
-        <JokerCard size={size} />
+        <JokerCard size={card.size} />
 
     {/if}
 

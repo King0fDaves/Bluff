@@ -59,6 +59,10 @@
     height:  calc(var(--cardSize) * 2.25rem);    
 }
 
+.diamond{
+    height: calc(var(--cardSize) * 2.7rem)
+}
+
 .JokerBorder{
         height:  calc(var(--cardSize) * 5rem);    ;
         width:  calc(var(--cardSize) * 5rem);    ;

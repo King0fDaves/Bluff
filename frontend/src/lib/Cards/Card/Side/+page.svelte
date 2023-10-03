@@ -7,7 +7,7 @@
 </script>
 
 
-<div class="CardSide {isLeft ? "CardLeftSide":"CardRightSide"}" style="--cardSize:{size}">
+<div class="CardSide {isLeft ? "CardLeftSide":"CardRightSide"} {suit === "Diamond" || suit === "Heart" ? "red":""}" style="--cardSize:{size}">
     {#if isLeft}
         {numToLetter(value)}
     {/if}
@@ -29,6 +29,10 @@
     flex-direction: column;
     padding: 0;
     align-items: center;
+}
+
+.red{
+    color: red;
 }
 
 .CardSide__suit{
