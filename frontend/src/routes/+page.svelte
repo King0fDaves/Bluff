@@ -1,30 +1,75 @@
 <script>
-    import Card from "$lib/Cards/Card/+page.svelte";
-    import CardFlip from "$lib/Cards/CardFlip/+page.svelte";
+    import TitleStack from "$lib/Home/TitleStack/+page.svelte";
+    import Intro from "$lib/Home/Intro/+page.svelte";
+    import Options from "$lib/Home/Options/+page.svelte";
+    import Login from "$lib/Home/Options/Forms/Auth/Login/+page.svelte";
+    import Register from "$lib/Home/Options/Forms/Auth/Register/+page.svelte";
+    import Join from "$lib/Home/Options/Forms/Game/Join/+page.svelte";
+    import Host from "$lib/Home/Options/Forms/Game/Host/+page.svelte";
+    import Rules from "$lib/Home/Options/Forms/Game/Rules/+page.svelte";
 
-    let size = .8;
-    const cards = [
-        {value: "B", size:size, suit:"Spade"},
-        {value: "L", size:size, suit:"Heart"},
-        {value: "U", size:size, suit:"Clover"},
-        {value: "F", size:size, suit:"Diamond"},
-        {value: "F", size:size, suit:"Clover"},
-    ]
+    import ShowFormContainerStore from "$lib/Stores/ShowFormContainerStore";
+
+    let showFormContainer;
+    let currentForm = null;
+
+    ShowFormContainerStore.subscribe((data) => {
+        showFormContainer = data;
+    })
+
+    function showForm(event){
+        currentForm = event.detail.form
+    }
+
 </script>
 
+{#if showFormContainer}
+<div class="Forms">
+    {#if currentForm.id ===  1}
+        <Login height={currentForm.height} />
 
-<Card />
+    {:else if currentForm.id === 2}
+        <Register height={currentForm.height} />
 
-<div>
-    {#each  cards as card, i}
-        <CardFlip card={card} time={5} cardCount={cards.length} id={i+1}/>
-    {/each}
+    {:else if currentForm.id === 3}
+        <Host height={currentForm.height} />
+    
+    {:else if currentForm.id === 4}
+        <Join  height={currentForm.height} />
+    
+    {:else if currentForm.id === 5}
+        <Rules height={currentForm.height} />
+    {/if}
 </div>
+{/if}
 
+
+<main class="Intro {showFormContainer ? "blur" :""}">
+    <TitleStack />
+    <Intro />
+    <Options on:showForm={showForm}/>    
+</main>
 
 <style lang="scss">
-div{
+
+.Forms{
+    position: absolute;
+    height: 100%;
     width: 100%;
+    top: 0;
     display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+.blur{
+    filter: blur(.5rem);
+    -webkit-filter: blur(.5rem);
+    overflow-y: hidden;
+    pointer-events: none;
 }
 </style>

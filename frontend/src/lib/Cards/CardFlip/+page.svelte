@@ -5,6 +5,7 @@
     export let time;
     export let cardCount;
     export let id;
+    export let isTitle = false;
 
     const newTime = sixDecFix(time / cardCount);
     let counter = 0;
@@ -23,7 +24,7 @@
     
     setTimeout(() => {
         renderCard = true
-    }, (renderTime * 1000) + 500);
+    }, (renderTime * 1000) + 300);
 
     function sixDecFix (decimal){ // Literally programming language error
       if(decimal === 0.6){
@@ -38,8 +39,8 @@
 </script>
 
 <div class="FlipCard {newTime === counter ? "flipCard":""}"
-    style="--cardSize:{card.size}; z-index:{id}; --id:{id}"
->
+    style="--cardSize:{card.size}; z-index:{id}; --time:{time}s"
+>      
     <div class="FlipCardInner {newTime === counter ? "flipCard":""}">
 
         <div class="Card" style="--cardSize:{card.size};">
@@ -49,7 +50,7 @@
                 {#if !renderCard}
                     <Card isBack={true} card={card} />
                 {:else}    
-                    <Card card={card} isTitle={true} />
+                    <Card card={card} isTitle={isTitle} />
                 {/if}
             {/if}
         </div>  
@@ -66,7 +67,6 @@
     height: calc(var(--cardSize) * 21rem);
     width:calc(var(--cardSize) * 15rem);
     perspective: 1000px; 
-    border: black solid .15rem;
     
     background:white;
     padding:0;
@@ -104,7 +104,7 @@
 }
 
 .flipCard{
-    animation: flipCard 1s linear 4s ;
+    animation: flipCard 1s linear calc(var(--time) - 1s) ;
 }
 
 </style>

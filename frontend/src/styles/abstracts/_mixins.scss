@@ -1,3 +1,20 @@
+@mixin gradientText($gradient){
+    background: $gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;   
+}
+
+@mixin sharpCorners($size){
+    clip-path: polygon(
+        0 $size,
+        $size 0,
+        100% 0,
+        100% calc(100% - $size),
+        calc(100% - $size) 100%,
+        0 100%
+    );
+}
+
 @mixin keyframes-animation($name) {
     @keyframes #{$name} {
         @content;
