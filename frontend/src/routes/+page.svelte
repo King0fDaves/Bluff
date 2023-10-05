@@ -2,6 +2,7 @@
     import TitleStack from "$lib/Home/TitleStack/+page.svelte";
     import Intro from "$lib/Home/Intro/+page.svelte";
     import Options from "$lib/Home/Options/+page.svelte";
+    import Creator from "$lib/Home/Creator/+page.svelte";
     import Login from "$lib/Home/Options/Forms/Auth/Login/+page.svelte";
     import Register from "$lib/Home/Options/Forms/Auth/Register/+page.svelte";
     import Join from "$lib/Home/Options/Forms/Game/Join/+page.svelte";
@@ -47,7 +48,8 @@
 <main class="Intro {showFormContainer ? "blur" :""}">
     <TitleStack />
     <Intro />
-    <Options on:showForm={showForm}/>    
+    <Options on:showForm={showForm}/>  
+    <Creator />  
 </main>
 
 <style lang="scss">

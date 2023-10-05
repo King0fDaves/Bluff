@@ -11,7 +11,7 @@
 
     export let card = {
         value:5,
-        suit:"Diamond",
+        suit:"Spade",
         size:1
     }
 
@@ -37,7 +37,7 @@
         <Suit_5 suit={card.suit} value={card.value} />
         <Suit_6 suit={card.suit} value={card.value} isTitle={isTitle}/>
 
-    {:else if value === "Joker"}
+    {:else if card.value === "Joker"}
         <JokerCard size={card.size} />
 
     {/if}
