@@ -1,7 +1,22 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import ShowFormContainerStore from "$lib/Stores/ShowFormContainerStore";
+    import { logout } from "$lib/Functions/ApiCalls/logout.js";
+    import IsAuthedStore from "$lib/Stores/IsAuthedStore.js";
+    
+    export let data;
 
+    let isAuthed;
+
+    IsAuthedStore.subscribe(data => {
+        isAuthed = data
+    })
+
+    const checkAuthed = data.isAuthed
+
+    IsAuthedStore.update(() => {
+        return checkAuthed
+    })
 
     const dispatch = createEventDispatcher()
 
@@ -17,12 +32,20 @@
         })
     }
 
+    function signOut(){
+        logout(data.authToken)
+        isAuthed = false;
+        document.cookie ='authCookie=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
-    let isAuthed = true;
+        IsAuthedStore.update(() => {
+            return false
+        })
+    
+    }
 
     const options = [
-        {id:1, name:"Login", isAuthed:false, height:1.2},
-        {id:2, name:"Register", isAuthed:false, height:1.5},
+        {id:1, name:"Login", isAuthed:false, height:1.4},
+        {id:2, name:"Register", isAuthed:false, height:1.6},
         {id:3, name:"Host", isAuthed:true, height:1.3},
         {id:4, name:"Join", isAuthed:true, height:1},
         {id:5, name:"Rules", isAuthed:true, height:1.5},
@@ -33,9 +56,9 @@
 
 <div class="Options">
     {#each options as option}
-        {#if isAuthed === option.isAuthed}  
+        {#if isAuthed  === option.isAuthed}  
             {#if option.id === 6}
-                <button class="OptionsBtn" on:click={() => {isAuthed = false}}>
+                <button class="OptionsBtn" on:click={signOut}>
                     <div class="OptionsBtn__title">
                         {option.name}
                     </div>

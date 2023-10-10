@@ -3,11 +3,11 @@
     
     let size = .55;
     const cards = [
-        {value: "B", size:size, suit:"Spade", height:.8},
-        {value: "L", size:size, suit:"Heart", height:1.3},
-        {value: "U", size:size, suit:"Clover", height:.8},
-        {value: "F", size:size, suit:"Diamond", height:1.5},
-        {value: "F", size:size, suit:"Clover", height:.9},
+        {id:1, value: "B", size:size, suit:"Spade", height:.8},
+        {id:2, value: "L", size:size, suit:"Heart", height:1.3},
+        {id:3, value: "U", size:size, suit:"Clover", height:.8},
+        {id:4, value: "F", size:size, suit:"Diamond", height:1.5},
+        {id:5, value: "F", size:size, suit:"Clover", height:.9},
     ]
 
 </script>
@@ -16,7 +16,7 @@
 <div class="TitleCards">
     {#each cards as card, i}
         <div style="z-index:{i+1}; --id:{i+1}; margin-top:{card.height * 2}rem" class="TitleCards__card">
-            <CardFlip card={card} isTitle={true} time={2} cardCount={cards.length} />
+            <CardFlip id={i+1} card={card} isTitle={true} time={2} cardCount={cards.length} />
         </div>
     {/each}
 </div>

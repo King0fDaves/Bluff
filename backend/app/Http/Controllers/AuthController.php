@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use App\Traits\HttpResponse;
@@ -14,7 +14,7 @@ class AuthController extends Controller
 {
     use HttpResponse;
 
-    public function login(LoginUserRequest $request)
+    public function login(LoginRequest $request)
     {
         $request->validated($request->all());
 

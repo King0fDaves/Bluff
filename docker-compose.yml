@@ -13,19 +13,19 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
 
-  backend:
-    build: ./backend
-    network_mode: host
-    depends_on:
-    - db
+  # backend:
+  #   build: ./backend
+  #   network_mode: host
+  #   depends_on:
+  #   - db
 
-  frontend:
-    build: ./frontend
-    ports:
-    - 3001:3000
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #   - 3001:3000
 
-    depends_on:
-    - backend
+  #   depends_on:
+  #   - backend
 
 
 

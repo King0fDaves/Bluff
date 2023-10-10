@@ -8,8 +8,10 @@
     import Join from "$lib/Home/Options/Forms/Game/Join/+page.svelte";
     import Host from "$lib/Home/Options/Forms/Game/Host/+page.svelte";
     import Rules from "$lib/Home/Options/Forms/Game/Rules/+page.svelte";
-
     import ShowFormContainerStore from "$lib/Stores/ShowFormContainerStore";
+    import IsAuthedStore from "$lib/Stores/IsAuthedStore.js"
+
+    export let data;
 
     let showFormContainer;
     let currentForm = null;
@@ -22,15 +24,21 @@
         currentForm = event.detail.form
     }
 
+    function authUser(){
+        IsAuthedStore.update(currentData => {
+            return true
+        })
+    }
+    
 </script>
 
 {#if showFormContainer}
 <div class="Forms">
     {#if currentForm.id ===  1}
-        <Login height={currentForm.height} />
+        <Login on:authUser={authUser} height={currentForm.height} />
 
     {:else if currentForm.id === 2}
-        <Register height={currentForm.height} />
+        <Register on:authUser={authUser} height={currentForm.height} />
 
     {:else if currentForm.id === 3}
         <Host height={currentForm.height} />
@@ -48,7 +56,7 @@
 <main class="Intro {showFormContainer ? "blur" :""}">
     <TitleStack />
     <Intro />
-    <Options on:showForm={showForm}/>  
+    <Options on:showForm={showForm} data={data}/>  
     <Creator />  
 </main>
 
