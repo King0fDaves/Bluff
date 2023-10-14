@@ -2,11 +2,12 @@
     import Loader from "$lib/Misc/Loader/+page.svelte";
     export let players;
     export let slider;
+    export let code
 </script>
 
 
 <span class="Code">
-    E6XJ71
+   Pin: {code}
 </span>
 
 <div class="Waiting">
@@ -63,16 +64,16 @@
     width: calc(80%);
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: space-between;
-    align-items:center;
+    align-items:flex-start;
     align-content: flex-start;
+    height: 5rem;
+
     overflow-y: scroll;
-    
-    max-height: 5rem;
 }
 
 .WaitingList__players{
-    width: 50%;
+    min-width: 50%;
+    margin-bottom: .4rem;
 
     @media screen and (max-width:400px){
         width: 100%;
@@ -100,6 +101,16 @@
         border: white solid .05rem;
 
     }
+}
+
+
+::-webkit-scrollbar{
+    background: #131313;
+}
+
+::-webkit-scrollbar-thumb{
+    background: rgb(228, 111, 111);
+    border-radius: 1rem;
 }
 
 

@@ -42,9 +42,9 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function player(): HasOne
-    {
-        return $this->hasOne(Player::class);
+    public function player(){
+
+        return $this->hasMany(Player::class);
 
     }
 }

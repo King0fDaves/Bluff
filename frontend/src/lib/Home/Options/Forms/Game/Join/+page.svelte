@@ -2,13 +2,43 @@
     import FormLayout from "$lib/Home/Options/Forms/+page.svelte";
     import ShowFormStore from "$lib/Stores/ShowFormStore.js";    
     import Loader from "$lib/Misc/Loader/+page.svelte";
+    import HostSocket from "$lib/Sockets/HostSocket/+page.svelte";
+    import joinRoom from "$lib/Functions/ApiCalls/Game/joinRoom.js";
+
     export let height;
+    export let authToken;
 
     let joined = false;
+    let code;
+    let room;
+
+    let playerCount;
+
     function closeForm(){
         ShowFormStore.update(currentData => {
             return false
         })
+    }
+
+    async function join(){
+        if(code){
+
+            const response = await joinRoom(authToken, {code:code})
+            
+            if(response.ok){
+                
+                const responseData = await response.json();
+
+                room = responseData.data.room
+                
+                joined = true;
+
+                playerCount = room.players.length + 1;
+
+            } else {
+                console.log('Something went wrong')
+            }
+        }   
     }
 
 </script>
@@ -20,20 +50,35 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
 
-            <input class="JoinForm__input" type="text" placeholder="Enter Code">
-            <input on:click={() => {joined = true}} class="JoinForm__btn" type="submit" value="Join">
+            <input class="JoinForm__input" bind:value={code} type="text" placeholder="Enter Pin">
+            <input on:click={join} class="JoinForm__btn" type="submit" value="Join">
 
         {:else}
-            <span class="JoinForm__code">E2MZ90</span>
+            <span class="JoinForm__code">Pin: {code}</span>
             <div class="PlayerCounter">
-                <i class="fa-solid fa-users"></i> - 3 / 4
+                <i class="fa-solid fa-users"></i> - {playerCount} / {room.max_player_count}
             </div>
-            <Loader />
-            <input on:click={() => {joined = false}} class="JoinForm__btn" type="submit" value="Leave">
+            
+            {#if playerCount < room.max_player_count}
+                <Loader />
+            {:else}
+                Ready
+            {/if}
 
+            <input on:click={() => {
+
+            }} class="JoinForm__btn" type="submit" value="Leave">
         {/if}
 
+        {#if joined}
+            <HostSocket
+                token={authToken} roomId={room.id}
+                joined={joined} roomCode={code}
 
+                on:addPlayer={() => {playerCount += 1 }}
+             />
+        {/if}
+ 
     </form>
 </FormLayout>
 

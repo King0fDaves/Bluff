@@ -3,19 +3,21 @@
     import ShowFormStore from "$lib/Stores/ShowFormStore.js";    
     import Create from "./Create/+page.svelte";
     import Wait from "./Wait/+page.svelte";
+    import HostSocket from "$lib/Sockets/HostSocket/+page.svelte"
+    
+    import hostRoom from "$lib/Functions/ApiCalls/Game/hostRoom.js";
+
     export let height;
+
+    export let authToken;
 
     let slider = 3;
     let allowJokers;
     let hosted = false;
 
-    let players = [
-        'Steve',
-        'Tendi',
-        'Mariner',
-        'Rutherford',
-        'Boimler'
-    ]
+    let players = []
+
+    let room;
 
     function closeForm(){
         ShowFormStore.update(currentData => {
@@ -23,21 +25,34 @@
         })
     }
 
-    function addPLayer(){
-        if(players.length < slider){
-            players = [...players, 'Morty']
-        }
+    function addPLayer(event){
+        players = [...players, event.detail.newUser]
     }
 
-    function host(event){
+    async function host(event){
         height = 1;
-        hosted = true;
 
         slider = event.detail.slider;
         allowJokers = event.detail.allowJokers;
-    }
 
+        const roomDetails = {
+            playerCount: slider,
+            allowJokers:allowJokers
+        }
 
+        const response = await hostRoom(authToken, roomDetails)
+
+        
+        if(response.ok){
+
+            const responseData = await response.json()
+            room = responseData.data[0];
+            hosted = true;
+            const theHost = room.players[0].user.name
+            players = [...players, theHost]
+        }
+
+    }   
 
 </script>
 
@@ -48,9 +63,14 @@
             <Create slider={slider} on:closeForm={closeForm} on:host={host} />
             
         {:else}
-           <Wait slider={slider} players={players}/>
 
+           <Wait slider={slider} players={players} code={room.code}/>
+           <HostSocket 
+           on:addPlayer={addPLayer} token={authToken} roomId={room.id}/>
+
+           
         {/if}
+
 
     </form>
 </FormLayout>

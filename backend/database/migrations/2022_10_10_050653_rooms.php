@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('allow_jokers')->default(true);
             $table->integer('turn_count')->default(0);
             $table->integer('turn_value')->default(0);
+            $table->boolean('is_active')->default(false);
 
             $table->json('the_stack')->default(0);
             $table->json('last_cards')->default(0);      

@@ -41,10 +41,10 @@
         <Register on:authUser={authUser} height={currentForm.height} />
 
     {:else if currentForm.id === 3}
-        <Host height={currentForm.height} />
+        <Host authToken={data.authToken} height={currentForm.height} />
     
     {:else if currentForm.id === 4}
-        <Join  height={currentForm.height} />
+        <Join authToken={data.authToken} height={currentForm.height} />
     
     {:else if currentForm.id === 5}
         <Rules height={currentForm.height} />

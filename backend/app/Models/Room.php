@@ -13,15 +13,17 @@ class Room extends Model
         'code',
         'allow_jokers',
         'max_player_count',
-        'the_stack'
+        'the_stack',
+        'last_cards'
     ];
 
     protected $casts = [
-        'the_stack' => 'array'
+        'the_stack' => 'array',
+        'last_cards' => 'array'
     ];
 
-    public function players(): HasMany 
-    {
-        return $this->hasMany(Player::class, 'players_rooms'); 
+    public function players(){
+
+        return $this->hasMany(Player::class); 
     } 
 }

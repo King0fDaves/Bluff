@@ -10,6 +10,8 @@ class Player extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
+        'room_id',
         'cards', 
     ];
 
@@ -17,8 +19,8 @@ class Player extends Model
         'cards' => 'array'
     ];
 
-    public function user(): BelongsTo
-    {
+    public function user(){
+
         return $this->belongsTo(User::class);
     }
 

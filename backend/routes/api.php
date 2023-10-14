@@ -22,10 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/get-room', [RoomController::class, 'getRoom']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
-    Route::post('/create-room', [RoomController::class, 'createRoom']);
+    Route::post('/host-room', [RoomController::class, 'hostRoom']);
+    Route::post('/join-room', [RoomController::class, 'joinRoom']);
 
     Route::get('/token', [AuthController::class, 'getToken']);
     Route::delete('/logout', [AuthController::class, 'logout']);
