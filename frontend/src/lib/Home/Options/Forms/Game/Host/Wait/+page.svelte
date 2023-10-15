@@ -1,8 +1,17 @@
 <script>
     import Loader from "$lib/Misc/Loader/+page.svelte";
+    import deleteRoom from "$lib/Functions/ApiCalls/Game/deleteRoom.js";
+
     export let players;
     export let slider;
-    export let code
+    export let code;
+    export let roomId;
+    export let token;
+
+
+    function removeRoom(){
+        deleteRoom(token, {id:roomId});
+    }
 </script>
 
 
@@ -30,7 +39,7 @@
 </div>
 
 <div class="Options">
-    <button on:click={() => {hosted = false}} class="HostForm__btn">
+    <button on:click={removeRoom} class="HostForm__btn">
         Cancel
     </button>
     <button  class="HostForm__btn {players.length < 3 ? "disable":""}">

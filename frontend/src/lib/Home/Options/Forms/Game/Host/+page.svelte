@@ -4,7 +4,6 @@
     import Create from "./Create/+page.svelte";
     import Wait from "./Wait/+page.svelte";
     import HostSocket from "$lib/Sockets/HostSocket/+page.svelte"
-    
     import hostRoom from "$lib/Functions/ApiCalls/Game/hostRoom.js";
 
     export let height;
@@ -25,7 +24,7 @@
         })
     }
 
-    function addPLayer(event){
+    function addPlayer(event){
         players = [...players, event.detail.newUser]
     }
 
@@ -41,7 +40,6 @@
         }
 
         const response = await hostRoom(authToken, roomDetails)
-
         
         if(response.ok){
 
@@ -54,6 +52,12 @@
 
     }   
 
+    async function removePlayer(event){
+        players = players.filter((player) => {
+            return player !== event.detail.user
+        })
+    }
+
 </script>
 
 <FormLayout title="Host" height={height}>
@@ -64,9 +68,16 @@
             
         {:else}
 
-           <Wait slider={slider} players={players} code={room.code}/>
+           <Wait slider={slider} players={players} 
+           code={room.code} token={authToken} roomId={room.id}
+           
+           />
            <HostSocket 
-           on:addPlayer={addPLayer} token={authToken} roomId={room.id}/>
+
+           on:addPlayer={addPlayer}
+           on:removePlayer={removePlayer}
+
+            roomId={room.id}/>
 
            
         {/if}

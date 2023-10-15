@@ -45,8 +45,12 @@
 
         if(response.ok){
             const token = responseData.data.token;
+            
             setCookie(token, 1)
-            dispatch('authUser')
+
+            dispatch('authUser', {
+                token: token
+            })
 
             removeForm()
             

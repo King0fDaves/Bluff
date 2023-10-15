@@ -10,6 +10,7 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
+        'creator_id',
         'code',
         'allow_jokers',
         'max_player_count',

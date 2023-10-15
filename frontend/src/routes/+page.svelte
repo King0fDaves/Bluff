@@ -24,7 +24,9 @@
         currentForm = event.detail.form
     }
 
-    function authUser(){
+    function authUser(event){
+
+        data.authToken = event.detail.token
         IsAuthedStore.update(currentData => {
             return true
         })

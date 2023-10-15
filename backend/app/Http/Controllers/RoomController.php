@@ -15,14 +15,15 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Http\Requests\CreateRoomRequest;
 use App\Http\Requests\AddPlayerRequest;
+use App\Http\Requests\LeaveRoomRequest;
+
 
 use App\Http\Resources\PlayerResource;
 use App\Http\Resources\RoomStatsResource;
 
 use App\Events\JoinRoomEvent;
-
-
-
+use App\Events\LeaveRoomEvent;
+use App\Events\RemoveRoomEvent;
 
 $normalCards = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
@@ -63,9 +64,11 @@ class RoomController extends Controller
             $allowJokers = true;
         }
 
-        $theStack = ($allowJokers) ?  array_merge($this->normalCards, $this->jokers) : $this->normalCards ;
-
+        $theStack = ($allowJokers) ?  array_merge($this->normalCards, $this->jokers) : $this->normalCards;
+        
+        
         $room = Room::create([
+            'creator_id' => Auth::user()->id,
             'code' => $roomCode,
             'max_player_count' => $maxPlayerCount,
             'allow_jokers' => $allowJokers, 
@@ -73,7 +76,6 @@ class RoomController extends Controller
             'last_cards' => [],
             'player_count' => 1
         ]);
-
 
         
         $this->addPlayer($room->id, Auth::user()->id);
@@ -113,6 +115,46 @@ class RoomController extends Controller
         
         }
         
+    }
+
+    public function leaveRoom(LeaveRoomRequest $request){ // When a user decides to leave a room
+
+        $request->validated($request->all());
+
+        $player = Player::where('room_id', $request->id)
+        ->where('user_id', Auth::user()->id)->first();
+
+        if($player){
+
+            event(new LeaveRoomEvent($request->id, Auth::user()->name));
+
+            $player->delete();
+
+            return $this->success('', 'You have left the room');
+            
+        } else {
+            return $this->error('', 'Player Not Found', 404);
+        }
+
+    }
+
+    public function removeRoom(LeaveRoomRequest $request){ // To delete the room created by the host
+
+        $room = Room::where('id', $request->id)->where('creator_id', Auth::user()->id)->first();
+        $players = Player::where('room_id', $request->id);
+        
+        if($room){
+
+            event(new RemoveRoomEvent($room->id));
+
+            $players->delete();
+            $room->delete();
+            
+            return $this->success('', 'Room has been removed');
+
+        } else {
+            return $this->error('', 'You did not host this room', 403);
+        }
     }
 
 

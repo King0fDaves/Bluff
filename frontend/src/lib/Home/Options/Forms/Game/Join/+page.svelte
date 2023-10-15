@@ -4,6 +4,8 @@
     import Loader from "$lib/Misc/Loader/+page.svelte";
     import HostSocket from "$lib/Sockets/HostSocket/+page.svelte";
     import joinRoom from "$lib/Functions/ApiCalls/Game/joinRoom.js";
+    import exitRoom from "$lib/Functions/ApiCalls/Game/exitRoom.js";
+    import removeForm from "$lib/Functions/removeForm.js"
 
     export let height;
     export let authToken;
@@ -41,6 +43,12 @@
         }   
     }
 
+    function leaveRoom(){
+        exitRoom(authToken, {id:room.id});
+        removeForm()
+    }
+
+
 </script>
 
 <FormLayout title="Join" height={height}>
@@ -65,17 +73,15 @@
                 Ready
             {/if}
 
-            <input on:click={() => {
-
-            }} class="JoinForm__btn" type="submit" value="Leave">
+            <input on:click={leaveRoom} class="JoinForm__btn" type="submit" value="Leave">
         {/if}
 
         {#if joined}
             <HostSocket
-                token={authToken} roomId={room.id}
-                joined={joined} roomCode={code}
-
+                roomId={room.id}
                 on:addPlayer={() => {playerCount += 1 }}
+                on:removePlayer={() => {playerCount -= 1}}
+
              />
         {/if}
  

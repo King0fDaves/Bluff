@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {    
             $table->id();
+            $table->integer('creator_id');
             $table->string('code');
             $table->integer('player_count')->default(0);
             $table->integer('max_player_count');

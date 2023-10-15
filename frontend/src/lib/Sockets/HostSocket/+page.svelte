@@ -3,10 +3,11 @@
     import { PUBLIC_HOST } from "$env/static/public";
     import { PUBLIC_WEBSOCKET_KEY } from "$env/static/public";
     import { PUBLIC_WEBSOCKET_PORT } from "$env/static/public";
+    import removeForm from "$lib/Functions/removeForm.js";
 
     import Echo from "laravel-echo";
     import Pusher from "pusher-js";
-    import { onMount, createEventDispatcher, afterUpdate } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
 
     export let roomId;
  
@@ -26,7 +27,6 @@
             encrypted: false,
             enabledTransports: ["ws", "wss"],
 
-
         });
 
             
@@ -44,6 +44,19 @@
                 })
             }
 
+        }).listen(".leave-room", (event) => {
+
+            if(event.roomId === roomId){
+
+                dispatch('removePlayer', {
+                    user:event.user
+                })
+            }
+        }).listen('.remove-room', (event) => {
+
+            if(event.roomId === roomId){
+                removeForm()
+            }
         })
 
     });

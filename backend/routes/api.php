@@ -28,6 +28,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/host-room', [RoomController::class, 'hostRoom']);
     Route::post('/join-room', [RoomController::class, 'joinRoom']);
+    Route::delete('/leave-room', [RoomController::class, 'leaveRoom']);
+    Route::delete('/remove-room', [RoomController::class, 'removeRoom']);
 
     Route::get('/token', [AuthController::class, 'getToken']);
     Route::delete('/logout', [AuthController::class, 'logout']);
