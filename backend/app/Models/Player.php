@@ -13,6 +13,7 @@ class Player extends Model
         'user_id',
         'room_id',
         'cards', 
+        'turn'
     ];
 
     protected $casts = [

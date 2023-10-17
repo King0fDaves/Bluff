@@ -1,6 +1,7 @@
 <script>
     import Loader from "$lib/Misc/Loader/+page.svelte";
     import deleteRoom from "$lib/Functions/ApiCalls/Game/deleteRoom.js";
+    import startGame from "$lib/Functions/ApiCalls/Game/startGame.js";
 
     export let players;
     export let slider;
@@ -10,8 +11,13 @@
 
 
     function removeRoom(){
-        deleteRoom(token, {id:roomId});
     }
+
+    function beginGame(){
+
+    }
+
+
 </script>
 
 
@@ -39,10 +45,10 @@
 </div>
 
 <div class="Options">
-    <button on:click={removeRoom} class="HostForm__btn">
+    <button on:click={deleteRoom(token, {id:roomId})} class="HostForm__btn">
         Cancel
     </button>
-    <button  class="HostForm__btn {players.length < 3 ? "disable":""}">
+    <button on:click={startGame(token, {id:roomId})}  class="HostForm__btn {players.length < 3 ? "disable":""}">
         Start
     </button>
 </div>
@@ -112,6 +118,10 @@
     }
 }
 
+.disable{
+    pointer-events: none;
+    opacity: .6;
+}
 
 ::-webkit-scrollbar{
     background: #131313;
@@ -121,7 +131,6 @@
     background: rgb(228, 111, 111);
     border-radius: 1rem;
 }
-
 
 
 </style>

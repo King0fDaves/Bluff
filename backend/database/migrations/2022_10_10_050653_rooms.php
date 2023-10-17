@@ -18,8 +18,11 @@ return new class extends Migration
             $table->integer('player_count')->default(0);
             $table->integer('max_player_count');
             $table->boolean('allow_jokers')->default(true);
+             
             $table->integer('turn_count')->default(0);
-            $table->integer('turn_value')->default(0);
+            $table->integer('turn_value')->nullable()->default(null);
+            $table->integer('player_turn')->default(1);
+
             $table->boolean('is_active')->default(false);
 
             $table->json('the_stack')->default(0);

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->foreign('room_id') 
                 ->references('id') 
                 ->on('rooms');
+            
+            $table->integer('turn');
 
             $table->json('cards');
             $table->timestamps();

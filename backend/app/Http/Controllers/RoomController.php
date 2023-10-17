@@ -141,9 +141,10 @@ class RoomController extends Controller
         $player = Player::create([ // 
             'user_id' => $userId,
             'room_id' => $roomId,
-            'cards' => [1, 5, 19, 23, 54]
+            'turn' => 0,
+            'cards' => []
         ]);
-
+        
     }
 
     private function generateCode(){ // To generate a room code

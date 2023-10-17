@@ -1,10 +1,10 @@
 <script>
-    import { PUBLIC_ORIGIN } from "$env/static/public";
     import { PUBLIC_HOST } from "$env/static/public";
     import { PUBLIC_WEBSOCKET_KEY } from "$env/static/public";
     import { PUBLIC_WEBSOCKET_PORT } from "$env/static/public";
     import removeForm from "$lib/Functions/removeForm.js";
 
+    import { goto } from '$app/navigation';
     import Echo from "laravel-echo";
     import Pusher from "pusher-js";
     import { onMount, createEventDispatcher } from "svelte";
@@ -56,6 +56,11 @@
 
             if(event.roomId === roomId){
                 removeForm()
+            }
+        }).listen('.start-game', (event) => {
+            
+            if(event.roomId === roomId){
+                goto(`/game/${roomId}`)
             }
         })
 

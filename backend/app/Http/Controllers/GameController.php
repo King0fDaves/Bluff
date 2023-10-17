@@ -13,6 +13,8 @@ use App\Models\Player;
 use Illuminate\Http\Request;
 use App\Http\Requests\RoomRequest;
 
+use App\Events\StartGameEvent;
+
 class GameController extends Controller
 {
     private array $normalCards = [
@@ -31,6 +33,8 @@ class GameController extends Controller
     private int $cardDistIndex = 0;
     private int $cardStart = 0;
     private int $cardIndex;
+    private int $turnIndex = 0;
+    private array $playerTurns = [];
 
     use HttpResponse;
 
@@ -63,8 +67,10 @@ class GameController extends Controller
                         'allow_jokers' => $allowJokers,
                     ]);
 
-                    return $this->success('Room has been created');
+                    event(new StartGameEvent($room->id));
 
+                    return $this->success('Room has been created');
+                    
                 } else {
                     return $this->error('', 'Room needs more players', 405);
                 }
@@ -80,7 +86,10 @@ class GameController extends Controller
 
     }
 
-    public function getCards($allowJokers){
+    
+
+
+    private function getCards($allowJokers){
         
         if($allowJokers){
             return array_merge($this->normalCards, $this->jokers);
@@ -90,9 +99,10 @@ class GameController extends Controller
 
     }
 
-    public function shuffleAndSpreadCards($cards, $roomId){
+    private function shuffleAndSpreadCards($cards, $roomId){ // Will shuffle and spread cards to players and assign turns 
 
         shuffle($this->finalCards);
+
 
         $players = Player::where('room_id', $roomId);
 
@@ -106,11 +116,18 @@ class GameController extends Controller
 
         $thePlayers = $players->get();
 
-        foreach ($thePlayers as $player){
-            
-            $player->cards = $this->addCards();            
-            $player->save();
+        for($index = 0; $index < $totalPlayerCount; $index++){ 
+            array_push($this->playerTurns, $index+1);
+        }
 
+        shuffle($this->playerTurns);
+
+
+        foreach ($thePlayers as $player){
+            $player->cards = $this->addCards();    
+            $player->turn = $this->playerTurns[$this->turnIndex];        
+            $player->save();
+            $this->turnIndex++;
         }
     }
 
