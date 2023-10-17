@@ -10,6 +10,9 @@
     export let height;
     export let authToken;
 
+    let showError;
+    let errorMsg;
+
     let joined = false;
     let code;
     let room;
@@ -26,10 +29,12 @@
         if(code){
 
             const response = await joinRoom(authToken, {code:code})
+
+            const responseData = await response.json();
             
             if(response.ok){
-                
-                const responseData = await response.json();
+                showError = false;
+                errorMsg = null;
 
                 room = responseData.data.room
                 
@@ -38,9 +43,15 @@
                 playerCount = room.players.length + 1;
 
             } else {
-                console.log('Something went wrong')
+                showError = true;
+                errorMsg = responseData.message === 'The code field must be an integer.' ? 'PIN can only have digits': responseData.message
+
+                console.log(responseData)
             }
-        }   
+        } else {
+            showError = true;
+            errorMsg = 'Fill in PIN field'
+        }
     }
 
     function leaveRoom(){
@@ -58,11 +69,16 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </button>
 
+            {#if showError}
+            <span class="error"> <i class="fa-solid fa-circle-xmark"></i> {errorMsg}</span>
+
+            {/if}
+
             <input class="JoinForm__input" bind:value={code} type="text" placeholder="Enter Pin">
             <input on:click={join} class="JoinForm__btn" type="submit" value="Join">
 
         {:else}
-            <span class="JoinForm__code">Pin: {code}</span>
+            <span class="JoinForm__code">PIN: {code}</span>
             <div class="PlayerCounter">
                 <i class="fa-solid fa-users"></i> - {playerCount} / {room.max_player_count}
             </div>
@@ -177,6 +193,15 @@
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
+}
+
+.error{
+    text-align: left;
+    width: 100%;
+    margin-left: 7rem;
+    font-size: 1.1rem;
+    color: rgb(235, 118, 76);
+
 }
 
 @keyframes rotation {

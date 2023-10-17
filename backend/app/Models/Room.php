@@ -13,6 +13,7 @@ class Room extends Model
         'creator_id',
         'code',
         'allow_jokers',
+        'is_active',
         'max_player_count',
         'the_stack',
         'last_cards'

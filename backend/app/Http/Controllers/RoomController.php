@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Room;
 use App\Models\Player;
-use App\Models\PlayerUser;
-use App\Models\PlayerRoom;
 
 use App\Traits\HttpResponse;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Http\Requests\CreateRoomRequest;
 use App\Http\Requests\AddPlayerRequest;
-use App\Http\Requests\LeaveRoomRequest;
+use App\Http\Requests\RoomRequest;
 
 
 use App\Http\Resources\PlayerResource;
@@ -25,28 +23,8 @@ use App\Events\JoinRoomEvent;
 use App\Events\LeaveRoomEvent;
 use App\Events\RemoveRoomEvent;
 
-$normalCards = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-    27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 
-    39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-    51, 52,
-];
-
-$withJokers = array_merge($normalCards, [53, 54]);
-
-
 class RoomController extends Controller
 {
-    private array $normalCards = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-        27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 
-        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-        51, 52 
-    ];
-    
-    private array $jokers = [53, 54];
     
     use HttpResponse;
 
@@ -63,8 +41,6 @@ class RoomController extends Controller
         if($maxPlayerCount < 4){
             $allowJokers = true;
         }
-
-        $theStack = ($allowJokers) ?  array_merge($this->normalCards, $this->jokers) : $this->normalCards;
         
         
         $room = Room::create([
@@ -72,7 +48,7 @@ class RoomController extends Controller
             'code' => $roomCode,
             'max_player_count' => $maxPlayerCount,
             'allow_jokers' => $allowJokers, 
-            'the_stack' => $theStack,
+            'the_stack' => [],
             'last_cards' => [],
             'player_count' => 1
         ]);
@@ -88,13 +64,15 @@ class RoomController extends Controller
         $request->validated($request->all());
 
         $room = Room::where('code', $request->code)->first();
-        $roomPlayers = $room->loadMissing('players');
-
-        $playerCount = count($roomPlayers->players);
-
-        $foundPlayer = Player::where('user_id', Auth::user()->id)->where('room_id', $room->id)->first();
-
+    
         if($room){
+
+            $foundPlayer = Player::where('user_id', Auth::user()->id)->where('room_id', $room->id)->first();
+
+            $roomPlayers = $room->loadMissing('players');
+
+            $playerCount = count($roomPlayers->players);
+
             if($playerCount < $room->max_player_count && !$room->is_active && !$foundPlayer){
 
                 $this->addPlayer($room->id, Auth::user()->id);
@@ -117,7 +95,7 @@ class RoomController extends Controller
         
     }
 
-    public function leaveRoom(LeaveRoomRequest $request){ // When a user decides to leave a room
+    public function leaveRoom(RoomRequest $request){ // When a user decides to leave a room
 
         $request->validated($request->all());
 
@@ -138,7 +116,7 @@ class RoomController extends Controller
 
     }
 
-    public function removeRoom(LeaveRoomRequest $request){ // To delete the room created by the host
+    public function removeRoom(RoomRequest $request){ // To delete the room created by the host
 
         $room = Room::where('id', $request->id)->where('creator_id', Auth::user()->id)->first();
         $players = Player::where('room_id', $request->id);

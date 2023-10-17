@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\GameController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/join-room', [RoomController::class, 'joinRoom']);
     Route::delete('/leave-room', [RoomController::class, 'leaveRoom']);
     Route::delete('/remove-room', [RoomController::class, 'removeRoom']);
+
+    Route::post('/start-game', [GameController::class, 'startGame']);
+
 
     Route::get('/token', [AuthController::class, 'getToken']);
     Route::delete('/logout', [AuthController::class, 'logout']);
