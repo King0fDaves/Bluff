@@ -1,27 +1,35 @@
 <script>
     export let size;
+    export let showCount = false;
+    export let count;
+    export let countDegree;
 </script>
 
 <div class="BackCardSuits" style="--cardSize:{size}">
     <div class="backSuitCont row-2-3 col-2-3">
-        <img src="/assests/Clover.png" class="backSuit " alt="">
+        <img src="/assests/Clover.png" class="backSuit " alt="suit.png">
     </div>
 
     <div class="backSuitCont row-2-3 col-4-5">
-        <img src="/assests/Spade.png" class="backSuit " alt="">
+        <img src="/assests/Spade.png" class="backSuit " alt="suit.png">
     </div>
 
     <div class="backSuitCont  row-4-5 col-2-3">
-        <img src="/assests/Heart.png" class="backSuit redSuit" alt="">
+        <img src="/assests/Heart.png" class="backSuit redSuit" alt="suit.png">
     </div>
 
     <div class="backSuitCont row-4-5 col-4-5">
-        <img src="/assests/Diamond.png" class="backSuit diamond redSuit" alt="">
+        <img src="/assests/Diamond.png" class="backSuit diamond redSuit" alt="suit.png">
     </div>
 
 </div>
 <div class="JokerBorder">
-    <img src="/assests/Joker.png" class="backSuitJoker" alt="">
+    {#if !showCount}
+        <img src="/assests/Joker.png" class="backSuitJoker" alt="suit.png">
+    {:else}
+
+        <span class="count" style="--countDegree:{countDegree}deg">{countDegree}</span>
+    {/if}
 </div>
 
 
@@ -92,5 +100,9 @@
     grid-row: 4/5; 
 }
 
-
+.count{
+    transform: rotate(calc(-14deg * var(--countDegree) ));
+    font-size: 1.5rem;
+    font-weight: 300;
+}
 </style>

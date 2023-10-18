@@ -39,7 +39,7 @@
     display: -ms-flexbox;
     display: -webkit-flex;
     justify-content: center;
-    margin-top: 1rem;
+    margin-top: 3rem;
     position: relative;
 }
 

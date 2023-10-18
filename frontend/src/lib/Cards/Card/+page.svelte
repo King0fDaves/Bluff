@@ -18,14 +18,16 @@
     export let isBack = false;
     export let showBorder = true;
     export let isTitle = false;
-
+    export let count;
+    export let showCount;
+    export let countDegree;
 </script>
 
 
 <div class="Card {isBack ? "Back":""} {showBorder ? "showBorder":""} {card.value === "Joker" ? "Joker":""}" style="--cardSize:{card.size};">
 
     {#if isBack}
-        <BackCard size={card.size} />
+        <BackCard size={card.size} showCount={showCount} count={count} countDegree={countDegree}/>
 
     {:else if card.value !== "Joker" && !isBack}
         <Side suit={card.suit}  value={card.value} size={card.size}/>

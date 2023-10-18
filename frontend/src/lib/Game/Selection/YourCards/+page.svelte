@@ -21,7 +21,7 @@
 
     }
 
-    let size = .4
+    let size = .45
     currentCards.forEach( card => {
             card.size = size
     });

@@ -5,6 +5,7 @@
 
 
     export let slider;
+    let disable = false;
     let allowJokers = slider < 4 ? true:false;
 
 
@@ -13,6 +14,7 @@
     }
 
     function host(){
+        disable = true;
         dispatch('host', {
             slider:slider,
             allowJokers:allowJokers
@@ -55,7 +57,7 @@
     </button>
 </div>
 
-<input on:click={() => {host()}} class="HostForm__btn" type="submit" value="Host">
+<input on:click={() => {host()}} class="HostForm__btn {disable ? "disableCreate":""}" type="submit" value="Host">
 
 <style lang="scss">
 
@@ -201,6 +203,10 @@
 
 .disable{
     opacity: .6;
+    pointer-events: none;
+}
+
+.disableCreate{
     pointer-events: none;
 }
 

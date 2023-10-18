@@ -12,10 +12,10 @@
     export let yourTurn;
 
 
-    export let myCards = [
-        1, 4, 8, 15, 23, 53, 9, 11, 14, 26, 42, 48, 54
-    ];
+    export let myCards;
     
+    console.log(myCards)
+
     let currentCards = cards.filter(filterCards);
 
     CurrentCardsStore.subscribe((data) => {

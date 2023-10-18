@@ -87,7 +87,37 @@ class GameController extends Controller
     }
 
     
+    public function getPlayer(RoomRequest $request){
+    
+        $player = Player::where('room_id', $request->id)->where('user_id', Auth::user()->id);
 
+        if($player){
+
+            $player = $player->first();
+            $room = Player::where('room_id', $request->id)->first();
+
+            $playerInfo = [
+                'id' => $player->id,
+                'roomId' => $player->room_id,
+                'userId' => $player->user_id,
+                'cards' => $player->cards,
+                'turn' => $player->turn,
+                'currentTurn' => [
+                    'player' => $room->player_turn,
+                    'card_count' => $room->turn_count,
+                    'card_value' => $room->turn_value
+                ],
+                'theStack' => $room->the_stack,
+                'last_cards' => $room->last_cards
+
+            ];
+    
+            return $this->success($playerInfo, 'You can be here');
+        }
+
+        return $this->error('You cannot be here', 403);
+    
+    }
 
     private function getCards($allowJokers){
         
@@ -103,6 +133,9 @@ class GameController extends Controller
 
         shuffle($this->finalCards);
 
+        shuffle($this->finalCards);
+
+        shuffle($this->finalCards);
 
         $players = Player::where('room_id', $roomId);
 
@@ -112,8 +145,6 @@ class GameController extends Controller
 
         $this->cardDistribution = $this->getCardDistribution($cardCount, $totalPlayerCount);
     
-        $this->cardIndex = $this->cardDistribution[$this->cardDistIndex];
-
         $thePlayers = $players->get();
 
         for($index = 0; $index < $totalPlayerCount; $index++){ 
@@ -132,15 +163,15 @@ class GameController extends Controller
     }
 
     private function addCards(){
-            
-        $playerCards = array_slice($this->finalCards, $this->cardStart, $this->cardIndex);
 
-        $this->cardStart = $this->cardIndex;
-        
-        $this->cardIndex = $this->cardStart + $this->cardIndex;
+        $cardEnd = $this->cardDistribution[0];
 
-        $this->cardDistIndex++;
-        
+        $playerCards = array_slice($this->finalCards, $this->cardStart, $cardEnd);
+
+        $this->cardStart += $cardEnd;
+
+        array_shift($this->cardDistribution);      
+
         return $playerCards;
     }
 

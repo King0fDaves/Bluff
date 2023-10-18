@@ -4,14 +4,18 @@
     export let theStack;
     export let lastCards;
     export let callCards;
-
 </script>
 
 <div class="Cards">
     
     {#each theStack as card, i}
         <div class="Card" style="--cardPlace:{i+1}">
-            <Card card={card} showBorder={true} isBack={true}  />
+            <Card 
+            
+            card={card} showBorder={true} isBack={true} 
+            showCount={true} count={theStack.length}
+            countDegree={i+1}
+            />
         </div> 
     {/each}
 

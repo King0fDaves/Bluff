@@ -5,6 +5,8 @@
     import cards from "$lib/Stores/TheCards.js";
     import Selection from "$lib/Game/Selection/+page.svelte";
 
+    export let data;
+
     let Turn = {count:0, value:3}; // Keeps Track of what the last card value was and the turn count 
     let yourTurn = true; // Decides if the current player should place a card
     let theStack = [] ; // The current stack of cards being played
@@ -66,7 +68,7 @@
 
     <Selection
         yourTurn={yourTurn} selectCard={selectCard}
-        Turn={Turn} cards={cards}
+        Turn={Turn} cards={cards} myCards={data.player.data.cards}
 
         on:selectCard={showCards} on:placeCards={placeCards}    
     />

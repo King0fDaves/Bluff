@@ -34,7 +34,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/remove-room', [RoomController::class, 'removeRoom']);
 
     Route::post('/start-game', [GameController::class, 'startGame']);
-
+    Route::post('/check-room', [GameController::class, 'getPlayer']);
 
     Route::get('/token', [AuthController::class, 'getToken']);
     Route::delete('/logout', [AuthController::class, 'logout']);
