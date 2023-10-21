@@ -1,7 +1,7 @@
 import { PUBLIC_ORIGIN } from "$env/static/public";
 
-export const getPlayer = async (authToken, params) => {
-    const response = await fetch(`${PUBLIC_ORIGIN}/api/check-room`, {
+export const callLastStack = async (authToken, params) => {
+    const response = await fetch(`${PUBLIC_ORIGIN}/api/call-cards`, {
         method: "POST",
         headers: {
             'Authorization': `Bearer ${authToken}`,
@@ -10,11 +10,12 @@ export const getPlayer = async (authToken, params) => {
         },
         body: JSON.stringify({
             id: params.id,
+            isTruth: params.isTruth,
+            callerId: params.callerId
         }),
     });
-
 
     return response;
 }
 
-export default getPlayer;
+export default callLastStack;

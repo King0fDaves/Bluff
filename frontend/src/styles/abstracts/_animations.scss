@@ -18,3 +18,12 @@
         transform: rotate(360deg);
     }
 } 
+
+@include keyframes-animation(alignCard){
+    0% {
+        transform: rotate(calc(var(--angle) * 1deg));
+    } 
+    100% {
+        transform: rotate(0deg)
+    }
+}

@@ -9,14 +9,17 @@ export async function load({ cookies, url}) {
     const roomId = url.pathname.slice(6);
     const response = await getPlayer(authToken, {id:roomId});
     const isAllowed = response.ok;
-    const player = await response.json();
+    const playerData = await response.json();
+
+
+    console.log(playerData.data)
 
     if(!isAllowed){
        throw redirect(308, '/game');
     }
 
     return {
-        player:player,
+        player:playerData.data,
         authToken:authToken
     }   
 }

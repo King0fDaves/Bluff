@@ -20,8 +20,9 @@ return new class extends Migration
             $table->boolean('allow_jokers')->default(true);
              
             $table->integer('turn_count')->default(0);
-            $table->integer('turn_value')->nullable()->default(null);
+            $table->integer('turn_value')->default(3);
             $table->integer('player_turn')->default(1);
+            $table->integer('last_player')->nullable()->default(null);
 
             $table->boolean('is_active')->default(false);
 

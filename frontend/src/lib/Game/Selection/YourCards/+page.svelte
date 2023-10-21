@@ -21,7 +21,7 @@
 
     }
 
-    let size = .45
+    let size = .5
     currentCards.forEach( card => {
             card.size = size
     });
@@ -71,6 +71,6 @@
 
 .disable{
     pointer-events: none;
-    opacity: .6;
+    opacity: .8;
 }
 </style>

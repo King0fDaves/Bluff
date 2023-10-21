@@ -28,7 +28,7 @@
         <img src="/assests/Joker.png" class="backSuitJoker" alt="suit.png">
     {:else}
 
-        <span class="count" style="--countDegree:{countDegree}deg">{countDegree}</span>
+        <span class="count" style="--countDegree:-{countDegree} ">{countDegree}</span>
     {/if}
 </div>
 
@@ -101,7 +101,7 @@
 }
 
 .count{
-    transform: rotate(calc(-14deg * var(--countDegree) ));
+    transform: rotate(calc(7deg * var(--countDegree) ));
     font-size: 1.5rem;
     font-weight: 300;
 }

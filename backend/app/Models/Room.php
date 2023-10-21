@@ -15,6 +15,11 @@ class Room extends Model
         'allow_jokers',
         'is_active',
         'max_player_count',
+        'player_count',
+        'player_turn',
+        'turn_count',
+        'turn_value',
+        'last_player',
         'the_stack',
         'last_cards'
     ];
@@ -26,6 +31,8 @@ class Room extends Model
 
     public function players(){
 
-        return $this->hasMany(Player::class); 
+        return $this->hasMany(Player::class)->select('id', 'room_id', 'user_id', 'turn');
     } 
+
+    
 }

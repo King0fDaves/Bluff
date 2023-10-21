@@ -2,6 +2,8 @@
 
     export  let theStack; // The current stack of cards being played
     export let calledCards;
+    export let isLastPlayer;
+    export let canCall;
 
     import { createEventDispatcher } from "svelte";
 
@@ -25,10 +27,10 @@
 
 <div class="Options">
     <button class="OptionsBtn {calledCards ? "disable":""}" style="--size:1" on:click={() => {cardSelection()}}>
-        <span class="OptionsBtn__title">Play</span>
+        <span class="OptionsBtn__title">Cards</span>
     </button>
     
-    <button class="OptionsBtn {calledCards ? "disable":""}" style="--size:1"  on:click={() => {callCards()}}>
+    <button class="OptionsBtn {calledCards || isLastPlayer || !canCall ? "disable":""}" style="--size:1"  on:click={() => {callCards()}}>
         <span class="OptionsBtn__title"> Call   </span>
     </button>
 </div>

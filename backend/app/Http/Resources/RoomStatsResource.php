@@ -21,12 +21,7 @@ class RoomStatsResource extends JsonResource
 
         return [
             'player_amount' => count($this->whenLoaded('players')),
-            parent::toArray($request),
-            
+            parent::toArray($request),            
         ];
-    }
-
-    protected function getPlayerAmount(){
-
     }
 }

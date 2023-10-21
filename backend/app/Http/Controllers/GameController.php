@@ -10,19 +10,25 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Room;
 use App\Models\Player;
 
+use App\Http\Resources\PlayerRoomResource;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\RoomRequest;
+use App\Http\Requests\PlaceCardsRequest;
+use App\Http\Requests\CallCardsRequest;
 
 use App\Events\StartGameEvent;
 
 class GameController extends Controller
 {
     private array $normalCards = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
-        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-        27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 
-        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-        51, 52 
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        
+        // , 11, 12, 13, 14,
+        // 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+        // 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 
+        // 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+        // 51, 52 
     ];
     
     private array $jokers = [53, 54];
@@ -47,8 +53,7 @@ class GameController extends Controller
 
             if($room->creator_id === Auth::user()->id){
                 
-                $roomPlayers = $room->loadMissing('players');
-                $playerCount = count($roomPlayers->players);
+                $playerCount = $room->player_count;
 
                 if($playerCount > 2){
 
@@ -65,6 +70,7 @@ class GameController extends Controller
                     $room->update([
                         'is_active' => true,
                         'allow_jokers' => $allowJokers,
+                        'player_count' => $playerCount,
                     ]);
 
                     event(new StartGameEvent($room->id));
@@ -94,28 +100,164 @@ class GameController extends Controller
         if($player){
 
             $player = $player->first();
-            $room = Player::where('room_id', $request->id)->first();
 
-            $playerInfo = [
-                'id' => $player->id,
-                'roomId' => $player->room_id,
-                'userId' => $player->user_id,
-                'cards' => $player->cards,
-                'turn' => $player->turn,
-                'currentTurn' => [
-                    'player' => $room->player_turn,
-                    'card_count' => $room->turn_count,
-                    'card_value' => $room->turn_value
-                ],
-                'theStack' => $room->the_stack,
-                'last_cards' => $room->last_cards
+            return new PlayerRoomResource($player->loadMissing('user')->loadMissing('room'));
+            
+        } else {
+            return $this->error('','You cannot be here', 403);
 
-            ];
-    
-            return $this->success($playerInfo, 'You can be here');
+        }    
+    }
+
+
+    public function placeCards(PlaceCardsRequest $request){
+        
+        $request->validated($request->all());
+
+        $room = Room::where('id', $request->id)->first();
+
+        $player = Player::where('room_id', $request->id)
+        
+        ->where('user_id', Auth::user()->id)
+
+        ->where('turn', $room->player_turn)->first();
+
+
+        $this->endGame($room->id);
+
+        if($player){
+
+            $lastCards = $request->cards;  
+
+            $currentStack = $room->the_stack;
+
+            foreach($lastCards as $card){
+                array_push($currentStack, $card);
+            }
+
+            $nextPlayer = $room->player_turn + 1;
+
+            $lastPlayer = $player->turn;
+
+            if($nextPlayer > $room->player_count){
+                $nextPlayer = 1;
+                $lastPlayer = $room->player_count;
+            }
+
+            $turnCount = $room->turn_count + 1;
+
+            $room->update([
+                'last_cards' => $lastCards,
+                'the_stack' => $currentStack,
+                'player_turn' => $nextPlayer,
+                'last_player' => $lastPlayer,
+                'turn_value' => $request->value,
+                'turn_count' => $turnCount,
+            ]);
+
+
+            $newCards = array_diff($player->cards, $lastCards);
+
+            $player->update([
+                'cards' => $newCards
+            ]);
+            
+        } else{
+            return $this->error('','You cannot place this card', 405);
         }
 
-        return $this->error('You cannot be here', 403);
+    }
+
+    public function callCards(callCardsRequest $request){
+        $request->validated($request->all());
+
+        $room = Room::where('id', $request->id)->first();
+        $caller = Player::where('id', $request->callerId)->first();
+        $lastPlayer = Player::where('room_id', $room->id)->where('turn', $room->last_player)->first();
+        
+        $callerIsLastPlayer = $lastPlayer->id === $caller->id;
+
+        $isGameFinished =  $this->endGame($room->id, true, $request->isTruth);
+
+        if($room && $caller && $lastPlayer && !$callerIsLastPlayer && !$isGameFinished){
+
+
+            $theStack = $room->the_stack;
+
+            $callerCards = $caller->cards;
+            $lastPlayerCards = $lastPlayer->cards;
+
+            $playerPickupId = ($request->isTruth) ? $caller->id : $lastPlayer->id; 
+
+            $playerPickUp = Player::where('id', $playerPickupId)->first();
+            $playerPickUpCards = $playerPickUp->cards;
+
+            foreach($theStack as $card){
+                array_push($playerPickUpCards, $card);
+            }
+            
+            $playerPickUp->update([
+                'cards'=>$playerPickUpCards
+            ]);
+
+            $room->update([
+                'turn_count' => 0,
+                'turn_value' => 3,
+                'last_player' => null,
+                'the_stack' => [],
+                'last_cards' => []
+            ]);
+
+        } else {
+            return $this->error('', 'You cannot call', 405);
+        }
+    }
+
+
+    private function endGame($roomId, $onCall = false, $isTruth = false){
+    
+        $room = Room::where('id', $roomId)->first();
+
+        $theLastPlayerId = $room->last_player;
+
+        if(!$onCall){
+            if($theLastPlayerId && $room){
+                $theLastPlayer = Player::where('room_id', $room->id)
+                ->where('turn', $theLastPlayerId)->first();
+                
+                $theLastPlayerCardCount = 0;
+                
+                foreach($theLastPlayer->cards as $card){
+                    $theLastPlayerCardCount++;
+                }
+    
+                if($theLastPlayerCardCount < 1){
+                    Player::where('room_id', $room->id)->delete();
+                    $room->delete();
+                }
+            }
+        } else if ($onCall && $isTruth){
+
+            if($theLastPlayerId && $room){
+                $theLastPlayer = Player::where('room_id', $room->id)
+                ->where('turn', $theLastPlayerId)->first();
+                
+                $theLastPlayerCardCount = 0;
+                
+                foreach($theLastPlayer->cards as $card){
+                    $theLastPlayerCardCount++;
+                }
+    
+                if($theLastPlayerCardCount < 1){
+                    Player::where('room_id', $room->id)->delete();
+                    $room->delete();
+                }
+            }
+
+            return true; 
+        }
+        
+        return false; 
     
     }
 
@@ -130,10 +272,6 @@ class GameController extends Controller
     }
 
     private function shuffleAndSpreadCards($cards, $roomId){ // Will shuffle and spread cards to players and assign turns 
-
-        shuffle($this->finalCards);
-
-        shuffle($this->finalCards);
 
         shuffle($this->finalCards);
 

@@ -1,4 +1,4 @@
-let cardSize = 0.6; // The size of the cards
+let cardSize = 0.5; // The size of the cards
 
 export let cards = [
     {id:1, value:1, size:cardSize, suit:"Spade", colour:"black", },

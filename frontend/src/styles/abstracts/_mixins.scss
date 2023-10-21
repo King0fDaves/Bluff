@@ -1,3 +1,4 @@
+
 @mixin gradientText($gradient){
     background: $gradient;
     -webkit-background-clip: text;
@@ -13,6 +14,13 @@
         calc(100% - $size) 100%,
         0 100%
     );
+}
+
+@mixin animateAlignCard($angle, $order){
+
+    --angle: $angle;
+    animation: alignCard 3s linear  ; // name time timing-function delay
+
 }
 
 @mixin keyframes-animation($name) {

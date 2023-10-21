@@ -14,8 +14,6 @@
 
     export let myCards;
     
-    console.log(myCards)
-
     let currentCards = cards.filter(filterCards);
 
     CurrentCardsStore.subscribe((data) => {
@@ -82,7 +80,7 @@
             {cardCount}x
         </span>
 
-        <ValueSetter Turn={Turn} />
+        <ValueSetter Turn={Turn} yourTurn={yourTurn} />
 
 
         <button class="dropdown" on:click={() => {dropCardSelection()}}>

@@ -71,12 +71,17 @@ class RoomController extends Controller
 
             $roomPlayers = $room->loadMissing('players');
 
-            $playerCount = count($roomPlayers->players);
+            $playerCount = $room->player_count;
 
+        
             if($playerCount < $room->max_player_count && !$room->is_active && !$foundPlayer){
 
                 $this->addPlayer($room->id, Auth::user()->id);
-        
+                
+                $room->update([
+                    'player_count' => $playerCount + 1
+                ]);
+
                 event(new JoinRoomEvent($room->id, Auth::user()->name));
 
                 return $this->success(['room'=>$room->loadMissing('players')], 'You have joined');
@@ -100,11 +105,19 @@ class RoomController extends Controller
         $request->validated($request->all());
 
         $player = Player::where('room_id', $request->id)
-        ->where('user_id', Auth::user()->id)->first();
+        ->where('user_id', Auth::user()->id)->first(); 
+
+        $room = Room::where('id', $request->id)->first();
+
+        $playerCount = $room->player_count;
 
         if($player){
 
             event(new LeaveRoomEvent($request->id, Auth::user()->name));
+            
+            $room->update([
+                'player_count' => ($playerCount - 1)
+            ]);
 
             $player->delete();
 

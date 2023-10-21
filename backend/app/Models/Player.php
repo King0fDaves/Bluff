@@ -13,7 +13,7 @@ class Player extends Model
         'user_id',
         'room_id',
         'cards', 
-        'turn'
+        'turn',
     ];
 
     protected $casts = [
@@ -25,4 +25,7 @@ class Player extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
 }

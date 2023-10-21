@@ -18,9 +18,9 @@
     export let isBack = false;
     export let showBorder = true;
     export let isTitle = false;
-    export let count;
-    export let showCount;
-    export let countDegree;
+    export let count = null;
+    export let showCount = false;
+    export let countDegree = null;
 </script>
 
 

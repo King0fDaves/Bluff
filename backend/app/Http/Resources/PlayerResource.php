@@ -17,7 +17,7 @@ class PlayerResource extends JsonResource
         return [
             'id' => $this->id,
             'cards' => $this->cards,
-            'user' => $this->whenLoaded('user') 
+            'user' => $this->whenLoaded('user')
         ];
     }
 }

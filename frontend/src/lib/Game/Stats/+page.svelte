@@ -2,17 +2,52 @@
     import checkCall from "$lib/Functions/checkCall.js"
     import numToLetter from "$lib/Functions/numToLetter.js"
 
-
     export let callCards; // Decides if a player called the last player's cards
     export let cardValues; // The literal cards placed by the last player
     export let Turn;
     export let lastCards; // The cards placed by the last player
     export let theStack; // The current stack of cards being played
-    
+    export let  lastPlayer; // The player who placed the last cards
+    export let currentPlayer; // The current Player
+    export let yourTurn; // Can the player place a card
+    export let playerId; // The players id
+
 </script>
 
 
 <div class="Stats">
+
+
+    <div class="Players">
+        <span class="Players__player">
+            <span class="now">Current -</span>
+            
+            {#if yourTurn}
+                You
+
+            {:else}
+                {currentPlayer.name} 
+
+            {/if}
+            - cards: {currentPlayer.cards}
+        </span>
+
+        <span class="Players__player">
+            <span class="call">Call -</span> 
+                {#if lastPlayer.canCall}
+
+                    {#if playerId === lastPlayer.id}
+                        You 
+                    {:else}
+                        {lastPlayer.name} 
+
+                    {/if} 
+                    - cards: {lastPlayer.cards}
+                {:else} 
+                    Coming Soon
+                {/if}
+            </span>
+    </div>
 
     <div class="GameStats">
         <div class="cardsPlaced">
@@ -34,20 +69,11 @@
                     {/if}
                 </span>
             {/if}
-        
-        </div>
-        
-        <div class="cardCount">
-            Total Stack -  <span class="cardCount__num">{theStack.length}</span>  
         </div>
     </div>
     
 
-    <div class="Players">
-        <span class="Players__player">
-            <span class="call">Call -</span> KingOfDaves - 10x   
-        </span>
-    </div>
+    
 
 
 </div>
@@ -81,16 +107,25 @@
 .Players{
     width: 100%;
     text-align: center;
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+}
 
+.Players__player{
+    width: 100%;
+    margin: .5rem;
 }
 
 .cardsPlaced{
-    width: 50%;
+    width: 100%;
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
     align-items: center;
-    margin-left: 1rem;
+    justify-content: center;
+    height: fit-content;
+    margin-top: 2rem;
 }
 
 
@@ -128,6 +163,13 @@
 
 .call{
     color: rgb(252, 84, 84);
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    
+}
+
+.now{
+    color: rgb(97, 245, 97);
     text-transform: uppercase;
     font-size: 1.3rem;
 }

@@ -5,7 +5,7 @@
 
     export let Turn;
     export let currentValue = Turn.value;
-
+    export let yourTurn;
 
     let clickedBtn = 0;
     let finalValue = currentValue;
@@ -32,7 +32,6 @@
             } else {
                 currentValue = newValue
                 Turn.value = newValue;
-
             }
 
             
@@ -50,7 +49,7 @@
 
             if(newValue < 1){
                 currentValue = 13;
-                Turn.value = newValue;
+                Turn.value = 13;
             } else {
                 currentValue = newValue
                 Turn.value = newValue;
@@ -70,6 +69,7 @@
 
 <div class="ValueSetter">
 
+    {#if yourTurn}
     <button class="ValueSetter__btn {clickedBtn === 1 && Turn.count > 0 ? "selected" : ""}"
     on:click={() => {decrement()}}>
         {#if Turn.count > 0}
@@ -96,6 +96,19 @@
         {/if}
     </button>
 
+    {:else}
+        <button class="ValueSetter__btn">    
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <button class="ValueSetter__btn">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <button class="ValueSetter__btn">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    {/if}
 </div>
 
 <style lang="scss">

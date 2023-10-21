@@ -35,6 +35,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/start-game', [GameController::class, 'startGame']);
     Route::post('/check-room', [GameController::class, 'getPlayer']);
+    Route::post('/place-cards', [GameController::class, 'placeCards']);
+    Route::post('/call-cards', [GameController::class, 'callCards']);
+
 
     Route::get('/token', [AuthController::class, 'getToken']);
     Route::delete('/logout', [AuthController::class, 'logout']);

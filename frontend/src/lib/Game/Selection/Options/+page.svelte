@@ -40,7 +40,7 @@
 
 .OptionBtn{            
     height: 3rem;
-    width: 5.5rem;
+    width: 6rem;
     margin: 1rem;
     font-size: .9rem;
     text-transform: uppercase;
@@ -99,7 +99,7 @@
 
 .disable{
     pointer-events: none;
-    opacity: .6;
+    background: rgb(82, 82, 82);
 }
 
 </style>
