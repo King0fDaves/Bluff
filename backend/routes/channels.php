@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\Player;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,17 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 
-Broadcast::channel('public.host.{id}', function ($user, $id) {
-    return true;
+Broadcast::channel('presence.room.{id}', function ($user, $id) {
+    return checkPlayer($id, $user->id);
 });
 
+function checkPlayer($roomId, $userId){
+    $player = Player::where('room_id', $roomId)->where('user_id', $userId)->first();
+
+    if($player){
+        return true;
+    } else {
+        return false;
+    }
+
+}

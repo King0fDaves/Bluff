@@ -7,10 +7,11 @@
     export let Turn;
     export let lastCards; // The cards placed by the last player
     export let theStack; // The current stack of cards being played
-    export let  lastPlayer; // The player who placed the last cards
+    export let lastPlayer; // The player who placed the last cards
     export let currentPlayer; // The current Player
     export let yourTurn; // Can the player place a card
     export let playerId; // The players id
+    export let canCall;
 
 </script>
 
@@ -33,8 +34,9 @@
         </span>
 
         <span class="Players__player">
-            <span class="call">Call -</span> 
-                {#if lastPlayer.canCall}
+            <span class="call">Call -</span>
+        
+                {#if Turn.count > 0}
 
                     {#if playerId === lastPlayer.id}
                         You 

@@ -29,6 +29,7 @@
 
 
 <style lang="scss">
+    
 .FormIntro{
     height:calc(100% - 2.5rem);
     width: calc(100% - 2.5rem);

@@ -19,6 +19,10 @@ use App\Http\Requests\CallCardsRequest;
 
 use App\Events\StartGameEvent;
 
+use App\Events\PlaceCardsEvent;
+use App\Events\CallCardsEvent;
+use App\Events\EndGameEvent;
+
 class GameController extends Controller
 {
     private array $normalCards = [
@@ -41,6 +45,7 @@ class GameController extends Controller
     private int $cardIndex;
     private int $turnIndex = 0;
     private array $playerTurns = [];
+
 
     use HttpResponse;
 
@@ -116,16 +121,17 @@ class GameController extends Controller
 
         $room = Room::where('id', $request->id)->first();
 
-        $player = Player::where('room_id', $request->id)
         
-        ->where('user_id', Auth::user()->id)
+        $gameEnded = $this->endGame($room->id);    
+                
 
-        ->where('turn', $room->player_turn)->first();
-
-
-        $this->endGame($room->id);
-
-        if($player){
+        if(!$gameEnded){
+            
+            $player = Player::where('room_id', $request->id)
+            ->where('user_id', Auth::user()->id)
+            ->where('turn', $room->player_turn)->first()
+            ->loadMissing('user');
+            
 
             $lastCards = $request->cards;  
 
@@ -155,14 +161,47 @@ class GameController extends Controller
                 'turn_count' => $turnCount,
             ]);
 
-
             $newCards = array_diff($player->cards, $lastCards);
 
             $player->update([
                 'cards' => $newCards
             ]);
-            
+
+            $theNextPlayer = Player::where('room_id', $room->id)->where('turn', $nextPlayer)->first()->loadMissing('user');
+
+            $playerResource = [
+                'id' => $player->id,
+                'name' => $player->user->name,
+                'cards' => count($player->cards)
+            ];         
+
+
+            $nextPlayerResource = [
+                'id' => $theNextPlayer->id,
+                'name' => $theNextPlayer->user->name,
+                'cards' => count($theNextPlayer->cards)
+            ];         
+
+            $turn = [
+                'count' => $turnCount,
+                'value' => $request->value
+            ];
+
+
+        
+            event(new PlaceCardsEvent($room->id, $lastCards,
+            $gameEnded, $playerResource, $nextPlayerResource, $turn));
+
+            return $nextPlayerResource;
+                
         } else{
+            if(!$room){
+                event(new PlaceCardsEvent(0, [],
+                true, ['id'=>0, "name"=>"null", "cards"=>0 ],
+                ['id'=>0, "name"=>"null", "cards"=>0 ],
+                ['count'=>0, "value"=>0 ]
+                ));
+            }
             return $this->error('','You cannot place this card', 405);
         }
 
@@ -172,14 +211,20 @@ class GameController extends Controller
         $request->validated($request->all());
 
         $room = Room::where('id', $request->id)->first();
+
+        $lastPlayerId = $room->last_player;
+
+        $gameEnded =  $this->endGame($request->id, true, $request->isTruth);
+
         $caller = Player::where('id', $request->callerId)->first();
-        $lastPlayer = Player::where('room_id', $room->id)->where('turn', $room->last_player)->first();
+        $lastPlayer = Player::where('room_id', $room->id)->where('turn', $room->last_player)->first()->loadMissing('user');
         
         $callerIsLastPlayer = $lastPlayer->id === $caller->id;
 
-        $isGameFinished =  $this->endGame($room->id, true, $request->isTruth);
-
-        if($room && $caller && $lastPlayer && !$callerIsLastPlayer && !$isGameFinished){
+        
+    
+        
+        if($room && $caller && $lastPlayer && !$callerIsLastPlayer && !$gameEnded){
 
 
             $theStack = $room->the_stack;
@@ -208,6 +253,8 @@ class GameController extends Controller
                 'last_cards' => []
             ]);
 
+            event(new CallCardsEvent($room->id, $playerPickupId, $caller->id, $gameEnded, $theStack));
+
         } else {
             return $this->error('', 'You cannot call', 405);
         }
@@ -230,15 +277,25 @@ class GameController extends Controller
                 foreach($theLastPlayer->cards as $card){
                     $theLastPlayerCardCount++;
                 }
+
+                $lastPlayerResource = [
+                    'id' => $theLastPlayer->id,
+                    'cards' => $theLastPlayerCardCount
+                ];
     
                 if($theLastPlayerCardCount < 1){
                     Player::where('room_id', $room->id)->delete();
                     $room->delete();
+   
+                    event(new EndGameEvent($roomId, true, $lastPlayerResource));
+
+                    return true;
                 }
             }
         } else if ($onCall && $isTruth){
 
             if($theLastPlayerId && $room){
+            
                 $theLastPlayer = Player::where('room_id', $room->id)
                 ->where('turn', $theLastPlayerId)->first();
                 
@@ -247,24 +304,32 @@ class GameController extends Controller
                 foreach($theLastPlayer->cards as $card){
                     $theLastPlayerCardCount++;
                 }
-    
+
+                $lastPlayerResource = [
+                    'id' => $theLastPlayer->id,
+                    'cards' => $theLastPlayerCardCount
+                ];
+
                 if($theLastPlayerCardCount < 1){
                     Player::where('room_id', $room->id)->delete();
                     $room->delete();
+
+                    event(new EndGameEvent($roomId, true, $lastPlayerResource));
+
+                    return true; 
                 }
             }
-
-            return true; 
+        } else if(!$room){
+            return true;
         }
         
         return false; 
-    
     }
 
     private function getCards($allowJokers){
         
+        return array_merge($this->normalCards, $this->jokers);
         if($allowJokers){
-            return array_merge($this->normalCards, $this->jokers);
         }
 
         return $this->normalCards;

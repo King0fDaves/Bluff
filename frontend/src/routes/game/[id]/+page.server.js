@@ -11,9 +11,6 @@ export async function load({ cookies, url}) {
     const isAllowed = response.ok;
     const playerData = await response.json();
 
-
-    console.log(playerData.data)
-
     if(!isAllowed){
        throw redirect(308, '/game');
     }

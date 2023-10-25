@@ -1,4 +1,5 @@
 <script>
+    import EndGame from "$lib/Game/EndGame/+page.svelte";
     import Stats from "$lib/Game/Stats/+page.svelte";
     import Options from "$lib/Game/Options/+page.svelte";
     import Cards from "$lib/Game/Cards/+page.svelte";
@@ -9,9 +10,11 @@
     import putCards from "$lib/Functions/ApiCalls/Game/Gameplay/putCards.js";
     import callLastStack from "$lib/Functions/ApiCalls/Game/Gameplay/callLastStack.js";
     import checkCall from "$lib/Functions/checkCall.js";
-
+    import GameSocket from "$lib/Sockets/GameSocket/+page.svelte";
 
     export let data;
+
+    let gameEnded = false;
 
     const playerData = data.player;
    
@@ -28,7 +31,7 @@
     let currentStack = cards.filter(filterTheStack);      
 
     let isLastPlayer = playerId === lastPlayer.id;
-
+    
     CurrentStackStore.subscribe((data) => {
         data = currentStack;
     })
@@ -41,17 +44,24 @@
         data = currentLastCards
     })
 
-
     let callCards = false; // Decides if a player called the last player's cards
     let cardValues = getCardValues(currentLastCards); // The literal cards placed  
     let selectCard = false; // If the current player is ready to place cards
     let Turn = {count: playerData.room.turn_count, value:playerData.room.turn_value}; // Keeps Track of what the last card value was and the turn count 
-    let myCards =playerData.cards;
+    let myCards = playerData.cards;
+    let canCall = lastPlayer.canCall;
 
     let disableSelect = false;
     let animateCards = false;
     let removeCount = false;
 
+    let currentCards = cards.filter(filterCards)
+    
+    let winner;
+
+    function filterCards(card){
+        return myCards.includes(card.id);
+    }
 
     function filterTheStack(card){
         return theStack.includes(card.id);
@@ -79,8 +89,8 @@
     }
     
 
-    function placeCards(event){ // To add the cards selected by the user to the currentStack
-
+    async function placeCards(event){ // To add the cards selected by the user to the currentStack
+        
         const theCards = event.detail.cards
         currentLastCards = theCards
         currentStack = [...currentStack, ...theCards]
@@ -89,28 +99,40 @@
 
         cardValues = [];
         let cardIds = [];
-    
+
         currentLastCards.forEach(card => {
             cardValues.push(card.value);
             cardIds.push(card.id);
-        });
+        }); 
 
+        
         const cardInfo = {
             id:playerData.room.id,
             cards:cardIds,
             value:Turn.value
         }
 
-        putCards(data.authToken, cardInfo);
+        const myData = {
+            id:playerData.id, 
+            name:playerData.user.name,
+            cards: myCards.length - theCards.length
+        };
+
+        lastPlayer = myData;
+
+        const response = await putCards(data.authToken, cardInfo);
+        const responseData = await response.json();
+       
+        canCall = false,
+        yourTurn = false;
+
+        currentPlayer = responseData;
 
     }
 
-    function flipCards(event){
-        callCards = true;
-        disableSelect = true;
-        removeCount = true;
+    function flipCards(){
 
-        theStack = theStack.slice(0, -lastCards.length);
+        flipTheCards();
 
         let callParams = {
             id:playerData.room.id,
@@ -119,6 +141,74 @@
         }
 
         callLastStack(data.authToken, callParams);
+
+        
+    }
+
+    function addCards(event){
+
+        const theLastPlayer = event.detail.lastPlayer;
+        const theCurrentPlayer = event.detail.currentPlayer;
+        const theTurn = event.detail.turn;
+
+        const playerId = playerData.id;
+
+
+        Turn.count = theTurn.count
+        Turn.value = theTurn.value
+
+        lastPlayer = theLastPlayer;
+
+        currentPlayer = theCurrentPlayer; 
+        isLastPlayer = playerId === lastPlayer.id;
+
+        if(playerId != lastPlayer.id){
+            
+            canCall = true;
+            yourTurn = playerData.id == currentPlayer.id;
+            
+            const theCards = event.detail.cards
+            currentLastCards = theCards
+            currentStack = [...currentStack, ...theCards]
+            selectCard = false
+
+            cardValues = [];
+            let cardIds = [];
+        
+            currentLastCards.forEach(card => {
+                cardValues.push(card.value);
+                cardIds.push(card.id);
+            });
+        }
+
+    }
+
+    function callTheCards(event){
+
+        const callerId = event.detail.callerId;
+        const playerId = playerData.id;
+        const playerPickupId = event.detail.playerPickupId;
+        const theGivenStack = event.detail.theStack;
+
+        if(callerId !== playerId){
+            flipTheCards()
+        }
+
+        if(playerPickupId === playerId){
+            myCards = [...myCards, ...theGivenStack]; 
+            currentCards = cards.filter(filterCards);
+        }
+
+    }
+
+
+    function flipTheCards(){
+
+        callCards = true;
+        disableSelect = true;
+        removeCount = true;
+
+        theStack = theStack.slice(0, -lastCards.length);
 
         setTimeout(() => {
             callCards = false;
@@ -141,21 +231,31 @@
 
             }, 1000)
            
-    
         }, 4000)
-
     }
 
+
+    function endTheGame(event){
+        gameEnded = true;
+        winner = event.detail.lastPlayer;
+
+
+    }   
 </script>
 
-<main class="TheGame">
+{#if gameEnded}
+    <div class="EndGame">
+        <EndGame isWinner={playerData.id === winner.id}/>
+    </div>
+{/if}
+<main class="TheGame {gameEnded ? "blur":""}">
 
     <Stats 
         callCards={callCards} Turn={Turn}
         cardValues={cardValues} lastCards={currentLastCards}
         theStack={currentStack} lastPlayer={lastPlayer}
         currentPlayer={currentPlayer} yourTurn={yourTurn}
-        playerId={playerId}
+        playerId={playerId} canCall={canCall}
     />
 
     <Cards
@@ -167,20 +267,48 @@
     <Options
         theStack={currentStack}
         calledCards={!callCards && !disableSelect ? false:true }
-        isLastPlayer={isLastPlayer} canCall={lastPlayer.canCall}
+        isLastPlayer={isLastPlayer} canCall={canCall}
         on:selectCard={showCards} on:callCards={flipCards}
      />
 
     <Selection
         yourTurn={yourTurn} selectCard={selectCard}
-        Turn={Turn} cards={cards} myCards={myCards}
-
+        Turn={Turn} cards={cards}
+        currentCards={currentCards}
         on:selectCard={showCards} on:placeCards={placeCards}    
     />
 
+
+    <GameSocket 
+        roomId={playerData.room.id} token={data.authToken}
+        cards={cards} gameEnded={gameEnded}
+
+        on:addCards={addCards}  
+        on:callCards={callTheCards}
+        on:endGame={endTheGame}
+    />
 </main>
 
 <style lang="scss">
+
+.EndGame{
+    position: absolute;
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.blur{
+    filter: blur(.5rem);
+    -webkit-filter: blur(.5rem);
+    overflow-y: hidden;
+    pointer-events: none;
+}
+
 .TheGame{
     height: 100dvh;
     max-width: 1000px;

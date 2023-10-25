@@ -4,7 +4,7 @@
     const dispatch = createEventDispatcher()
 
     export let yourTurn; // Decides if the player can select a card
-
+    
     function clear(){ // Clears all the cards selected by the user
         dispatch('clearCards')
     }

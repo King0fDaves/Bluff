@@ -1,7 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
-    import CurrentCardsStore from "$lib/Stores/CurrentCardsStore";
-
+    
     import ValueSetter from "$lib/Game/Selection/ValueSetter/+page.svelte";
     import YourCards from "$lib/Game/Selection/YourCards/+page.svelte";
     import Options from "$lib/Game/Selection/Options/+page.svelte";
@@ -11,26 +10,14 @@
     export let Turn;
     export let yourTurn;
 
+    export let currentCards;
 
-    export let myCards;
-    
-    let currentCards = cards.filter(filterCards);
-
-    CurrentCardsStore.subscribe((data) => {
-        data = currentCards;
-    })
 
     let cardCount = 0; // The amount of cards selected by the user
        
     let picked = []; // Cards selected by the user
 
-
-    function filterCards(card){
-        return myCards.includes(card.id);
-    }
-
     const dispatch  = createEventDispatcher()
-
     
     function dropCardSelection(){ // Drops the card selection menu
         dispatch('selectCard', {

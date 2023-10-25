@@ -14,7 +14,7 @@
     export let data;
 
     let showFormContainer;
-    let currentForm = null;
+    let currentForm = 0;
 
     ShowFormContainerStore.subscribe((data) => {
         showFormContainer = data;
