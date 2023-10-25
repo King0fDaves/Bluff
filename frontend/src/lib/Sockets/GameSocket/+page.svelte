@@ -3,10 +3,13 @@ import { PUBLIC_HOST } from "$env/static/public";
 import { PUBLIC_WEBSOCKET_KEY } from "$env/static/public";
 import { PUBLIC_WEBSOCKET_PORT } from "$env/static/public";
 import { PUBLIC_ORIGIN } from "$env/static/public";
+import { PUBLIC_ENCRYPT_WEBSOCKET } from "$env/static/public";
 
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import { onMount, createEventDispatcher } from "svelte";
+
+const shouldEncrypt = PUBLIC_ENCRYPT_WEBSOCKET === "true" ? true:false;
 
 export let roomId;
 export let token;
@@ -25,10 +28,10 @@ onMount(() => {
         broadcaster: "pusher",
         key: PUBLIC_WEBSOCKET_KEY,
         cluster: "mt1",
-        forceTLS: false,
+        forceTLS: shouldEncrypt,
         wsHost: PUBLIC_HOST,
         wsPort: PUBLIC_WEBSOCKET_PORT,
-        encrypted: false,
+        encrypted: shouldEncrypt,
         enabledTransports: ["ws", "wss"],
         authEndpoint: `${PUBLIC_ORIGIN}/broadcasting/auth`, 
             auth: {

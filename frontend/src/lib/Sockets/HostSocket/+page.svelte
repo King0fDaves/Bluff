@@ -2,12 +2,15 @@
     import { PUBLIC_HOST } from "$env/static/public";
     import { PUBLIC_WEBSOCKET_KEY } from "$env/static/public";
     import { PUBLIC_WEBSOCKET_PORT } from "$env/static/public";
+    import { PUBLIC_ENCRYPT_WEBSOCKET } from "$env/static/public";
     import removeForm from "$lib/Functions/removeForm.js";
 
     import { goto } from '$app/navigation';
     import Echo from "laravel-echo";
     import Pusher from "pusher-js";
     import { onMount, createEventDispatcher } from "svelte";
+
+    const shouldEncrypt = PUBLIC_ENCRYPT_WEBSOCKET === "true" ? true:false;
 
     export let roomId;
  
@@ -21,10 +24,10 @@
             broadcaster: "pusher",
             key: PUBLIC_WEBSOCKET_KEY,
             cluster: "mt1",
-            forceTLS: false,
+            forceTLS: shouldEncrypt,
             wsHost: PUBLIC_HOST,
             wsPort: PUBLIC_WEBSOCKET_PORT,
-            encrypted: false,
+            encrypted: shouldEncrypt,
             enabledTransports: ["ws", "wss"],
 
         });

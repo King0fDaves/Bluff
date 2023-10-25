@@ -8,9 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm config set update-notifier false
-
 RUN npm run build
+
+RUN npm config set update-notifier false
 
 EXPOSE 3000
 
