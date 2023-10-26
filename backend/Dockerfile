@@ -22,4 +22,4 @@ EXPOSE 8000
 EXPOSE 6001
 COPY . .
 
-CMD  php artisan serve --host=0.0.0.0 & php artisan websockets:serve --host=0.0.0.0
+CMD  php artisan serve --host=0.0.0.0 & php artisan websockets:serve --host=0.0.0.0 

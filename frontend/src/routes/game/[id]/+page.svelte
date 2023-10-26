@@ -310,10 +310,12 @@
 }
 
 .TheGame{
-    height: 100dvh;
+    height: calc(100vh - 3rem);
     max-width: 1000px;
     background: none;
     margin: auto;
+    margin-top:0;
+    margin-bottom:0;
     padding: 0;
 
     position: relative;

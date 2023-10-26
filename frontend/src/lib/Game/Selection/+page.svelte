@@ -238,7 +238,8 @@
 
 
 .bringUpSelection{
-    height: calc(100dvh - 11rem);
+    height: calc(100vh - 11rem);
+    bottom:0;
     padding: 1rem;
 }
 

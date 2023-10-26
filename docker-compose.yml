@@ -15,17 +15,22 @@ services:
 
   backend:
     build: ./backend
+    
     ports:
-      - 8001:8000
+      - 8002:8000
       - 6002:6001
 
+    volumes:
+      - /etc/letsencrypt/live/talent-vampire.bnr.la-0001/fullchain.pem:/app/ssl/fullchain.pem
+      - /etc/letsencrypt/live/talent-vampire.bnr.la-0001/privkey.pem:/app/ssl/privkey.pem
+    
     depends_on:
-    - db
+      - db
 
   frontend:
     build: ./frontend
     ports:
-    - 3001:3000
+    - 3002:3000
     
     depends_on:
     - backend

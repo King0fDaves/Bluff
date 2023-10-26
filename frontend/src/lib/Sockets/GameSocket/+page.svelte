@@ -30,6 +30,7 @@ onMount(() => {
         cluster: "mt1",
         forceTLS: shouldEncrypt,
         wsHost: PUBLIC_HOST,
+        wssPort: PUBLIC_WEBSOCKET_PORT,
         wsPort: PUBLIC_WEBSOCKET_PORT,
         encrypted: shouldEncrypt,
         enabledTransports: ["ws", "wss"],
