@@ -1,6 +1,6 @@
 <div class="Creator">
     <h2 class="Creator__intro">
-        Brought to you by
+        Created soley by
     </h2>
 
     <span class="Creator__name">
