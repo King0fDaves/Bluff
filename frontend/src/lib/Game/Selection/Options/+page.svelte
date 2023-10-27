@@ -35,7 +35,7 @@
     justify-content: space-between;
     background: none;
     position: relative;
-
+    
 }
 
 .OptionBtn{            

@@ -314,7 +314,7 @@
 }
 
 .TheGame{
-    height: calc(100vh - 1rem);
+    height: calc(100vh - 3rem);
     max-width: 1000px;
     background: none;
     margin: auto;
