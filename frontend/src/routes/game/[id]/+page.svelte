@@ -281,7 +281,7 @@
 
     <GameSocket 
         roomId={playerData.room.id} token={data.authToken}
-        cards={cards} gameEnded={gameEnded}
+        cards={cards}
 
         on:addCards={addCards}  
         on:callCards={callTheCards}
