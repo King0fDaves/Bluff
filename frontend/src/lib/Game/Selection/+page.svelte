@@ -93,12 +93,13 @@
 <style lang="scss">
 
 .CardSelection{
-    position: absolute;
+    position: fixed;
     height: 0;
-    width: calc(100% - 2rem) ;
+    max-width: calc(1000px - 2rem);
     background: black;
     bottom: 0;
-    padding: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
 
     display: grid;
     display: -ms-grid;
@@ -238,7 +239,7 @@
 
 
 .bringUpSelection{
-    height: calc(100vh - 11rem);
+    height: calc(100vh - 10rem);
     bottom:0;
     padding: 1rem;
 }

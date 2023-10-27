@@ -36,7 +36,8 @@
         </button>
     {/each}
     
-        
+    <div class="extraSpace"></div>
+
 </div>
 
 <style lang="scss">
@@ -72,5 +73,10 @@
 .disable{
     pointer-events: none;
     opacity: .8;
+}
+
+.extraSpace{
+    height: 3rem;
+    width: 100$;
 }
 </style>

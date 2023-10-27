@@ -11,7 +11,9 @@
 
 <div class="Cards">
 
-    {#each theStack as card, i}
+    {#if !callCards && theStack.length < 5}
+        {#each theStack as card, i}
+
 
         <div class="Card {animateCards ? "called":""}" style="--cardPlace:{i+1}; ">
             <Card 
@@ -21,7 +23,9 @@
             />
         </div> 
 
-    {/each}
+    
+        {/each}
+    {/if}
 
     {#if lastCards.length > 0 && callCards}
         {#each lastCards as card, i}
@@ -51,12 +55,13 @@
 }
 
 .Card{
-
     position: absolute;
     transform: rotate(calc(7deg * var(--cardPlace)))
-
 }
 
+.hide{
+    display: none;
+}
 
 .lastCard{
 
@@ -70,9 +75,6 @@
     transform: rotate(0deg) translateX(100vw);
 }
 
-.swipe{
-
-}
 
 @keyframes alignCard {
     0% {
