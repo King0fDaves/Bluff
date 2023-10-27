@@ -1,0 +1,23 @@
+name: Bluff CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update Production Folder
+        run: |
+          cp -r . ~/projects/Bluff
+          cd ~/projects/Bluff
+
+          docker compose build
+          docker compose down
+          docker compose up -d
