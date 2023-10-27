@@ -57,9 +57,6 @@
     transform: rotate(calc(7deg * var(--cardPlace)))
 }
 
-.hide{
-    display: none;
-}
 
 .lastCard{
 

@@ -95,7 +95,7 @@
 .CardSelection{
     position: fixed;
     height: 0;
-    max-width: calc(1000px - 2rem);
+    width: calc(1000px - 2rem);
     background: black;
     bottom: 0;
     padding-left: 1rem;
@@ -105,6 +105,10 @@
     display: -ms-grid;
     display: -moz-grid;
     grid-template-rows: 4rem 1fr;
+
+    @media screen and (max-width: 1000px){
+        width: calc(100% - 2rem);
+    }
 }
 
 .TopSelector{
