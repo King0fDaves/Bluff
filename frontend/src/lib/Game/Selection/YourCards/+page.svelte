@@ -76,7 +76,9 @@
 }
 
 .extraSpace{
-    height: 3rem;
-    width: 100$;
+    width: 100%;
+    height: 2rem;
+    margin-top: 1rem;
 }
+
 </style>
