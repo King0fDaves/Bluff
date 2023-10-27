@@ -56,8 +56,11 @@
     let removeCount = false;
 
     let currentCards = cards.filter(filterCards)
-    
     let winner;
+
+    let originalStack;
+
+
 
     function filterCards(card){
         return myCards.includes(card.id);
@@ -188,14 +191,13 @@
         const callerId = event.detail.callerId;
         const playerId = playerData.id;
         const playerPickupId = event.detail.playerPickupId;
-        const theGivenStack = event.detail.theStack;
 
         if(callerId !== playerId){
             flipTheCards()
         }
 
         if(playerPickupId === playerId){
-            myCards = [...myCards, ...theGivenStack]; 
+            myCards = [...myCards, ...originalStack]; 
             currentCards = cards.filter(filterCards);
         }
 
@@ -208,7 +210,9 @@
         disableSelect = true;
         removeCount = true;
 
-        theStack = theStack.slice(0, -lastCards.length);
+        originalStack = theStack;
+        const flippedStack = theStack.slice(0, -lastCards.length);
+        theStack = flippedStack;
 
         setTimeout(() => {
             callCards = false;

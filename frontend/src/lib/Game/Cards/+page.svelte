@@ -11,21 +11,19 @@
 
 <div class="Cards">
 
-    {#if !callCards && theStack.length < 5}
-        {#each theStack as card, i}
+    {#each theStack as card, i}
 
 
-        <div class="Card {animateCards ? "called":""}" style="--cardPlace:{i+1}; ">
-            <Card 
-                card={card} showBorder={true} isBack={true} 
-                showCount={!removeCount} count={theStack.length}
-                countDegree={i+1}
-            />
-        </div> 
+    <div class="Card {animateCards ? "called":""}" style="--cardPlace:{i+1}; ">
+        <Card 
+            card={card} showBorder={true} isBack={true} 
+            showCount={!removeCount} count={theStack.length}
+            countDegree={i+1}
+        />
+    </div> 
 
-    
-        {/each}
-    {/if}
+
+    {/each}
 
     {#if lastCards.length > 0 && callCards}
         {#each lastCards as card, i}

@@ -220,8 +220,7 @@ class GameController extends Controller
         $callerIsLastPlayer = $lastPlayer->id === $caller->id;
 
         
-    
-        
+
         if($room && $caller && $lastPlayer && !$callerIsLastPlayer && !$gameEnded){
 
 
@@ -251,7 +250,7 @@ class GameController extends Controller
                 'last_cards' => []
             ]);
 
-            event(new CallCardsEvent($room->id, $playerPickupId, $caller->id, $gameEnded, $theStack));
+            event(new CallCardsEvent($room->id, $playerPickupId, $caller->id, $gameEnded));
 
         } else {
             return $this->error('', 'You cannot call', 405);

@@ -66,7 +66,6 @@ onMount(() => {
         
         dispatch('callCards', {
             'roomId':event.roomId,
-            'theStack':event.theStack,
             'callerId':event.callerId,
             'gameEnded':event.gameEnded,
             'playerPickupId':event.playerPickUpId,
