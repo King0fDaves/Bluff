@@ -21,8 +21,8 @@ services:
       - 6002:6001
 
     volumes:
-      - /etc/letsencrypt/live/talent-vampire.bnr.la-0001/fullchain.pem:/app/ssl/fullchain.pem
-      - /etc/letsencrypt/live/talent-vampire.bnr.la-0001/privkey.pem:/app/ssl/privkey.pem
+      - /etc/letsencrypt/live/bluff.website/fullchain.pem:/app/ssl/fullchain.pem
+      - /etc/letsencrypt/live/bluff.website/privkey.pem:/app/ssl/privkey.pem
     
     depends_on:
       - db
