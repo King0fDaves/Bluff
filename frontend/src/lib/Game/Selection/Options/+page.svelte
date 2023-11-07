@@ -40,7 +40,7 @@
 
 .OptionBtn{            
     height: 3rem;
-    width: 6rem;
+    width: 7rem;
     margin: 1rem;
     font-size: .9rem;
     text-transform: uppercase;
@@ -60,8 +60,7 @@
     z-index: 2;
     position: absolute;
 
-    bottom: 1rem;
-
+    bottom: 2rem;
 
     &:hover{
         background: rgb(82, 82, 82);

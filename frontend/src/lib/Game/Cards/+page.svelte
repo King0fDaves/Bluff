@@ -40,16 +40,23 @@
 <style lang="scss">
 
 .Cards{
-    position: relative;
-    width: 100%;
-    height: 100%;
+    position: fixed;
+    width: 1000px;
+    height: 50%;
+    margin: auto;
+
+    top: 12rem;    
+    @media screen and (max-width: 1000px){
+        width: calc(100% - 2rem);
+    } 
+
+     
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
-    grid-row: 2/3;
 }
 
 .Card{

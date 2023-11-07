@@ -74,6 +74,16 @@
         return lastCards.includes(card.id);
     }
 
+    function extractCardIds(cards){
+        let cardIds = []
+        cards.forEach(card => {
+            cardIds.push(card.id)
+        })
+
+        return cardIds
+    }
+
+
     function showCards(event){ // To bring up/down the card seletion panel
         selectCard = event.detail.selectCard
     }
@@ -192,14 +202,22 @@
         const playerId = playerData.id;
         const playerPickupId = event.detail.playerPickupId;
 
+        if(playerPickupId === currentPlayer.id){
+            currentPlayer.cards += currentStack.length
+        }
+
+        if(playerPickupId === playerId){
+    
+            const newCards = extractCardIds(originalStack)
+
+            myCards = [...myCards, ...newCards]; 
+            currentCards = cards.filter(filterCards);
+        } 
+
         if(callerId !== playerId){
             flipTheCards()
         }
 
-        if(playerPickupId === playerId){
-            myCards = [...myCards, ...originalStack]; 
-            currentCards = cards.filter(filterCards);
-        }
 
     }
 
@@ -210,7 +228,7 @@
         disableSelect = true;
         removeCount = true;
 
-        originalStack = theStack;
+        originalStack = currentStack
         const flippedStack = theStack.slice(0, -lastCards.length);
         theStack = flippedStack;
 
@@ -304,6 +322,7 @@
     justify-content: center;
     width: 100%;
     height: 100vh;
+    padding: 0;
 }
 
 .blur{
@@ -314,7 +333,6 @@
 }
 
 .TheGame{
-    height: calc(100vh - 3rem);
     max-width: 1000px;
     background: none;
     margin: auto;
@@ -329,6 +347,5 @@
     display: -moz-grid;
     grid-template-rows: 8rem 1fr 6rem;
 }
-
 
 </style>

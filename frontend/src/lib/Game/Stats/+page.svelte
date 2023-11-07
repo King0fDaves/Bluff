@@ -84,17 +84,26 @@
 <style lang="scss">
 
 .Stats{
-    width: 100%;
+    position: fixed;
+    width: 1000px;
+    top: 0rem;
+    margin: auto;
+
+    @media screen and (max-width: 1000px){
+        width: calc(100% - 2rem);
+    }
+    
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
     justify-content: space-evenly;
     flex-direction: column;
-    padding-top: 1rem;
     font-size: 1.2rem;
     font-family: $primaryFont;
-    position: relative;
-    grid-column: 1/2;
+    
+
+  
+
 }
 
 .GameStats{

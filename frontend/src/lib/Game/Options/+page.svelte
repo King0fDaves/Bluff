@@ -39,17 +39,19 @@
 <style lang="scss">
 
 .Options{
-    grid-row: 3/4;
-    height: 100%;
-    width: 100%;
-
+    position: fixed;
+    width: 1000px;
+    @media screen and (max-width: 1000px){
+        width: calc(100% - 2rem);
+    }
+    margin: auto;
+    bottom: 2rem;
     display: flex;
     display: -ms-flexbox;
     display: -webkit-flex;
-
     justify-content: space-between;
 
-
+    
 }
 
 .OptionsBtn{
