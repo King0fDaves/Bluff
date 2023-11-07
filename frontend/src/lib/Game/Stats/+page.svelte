@@ -90,7 +90,7 @@
     margin: auto;
 
     @media screen and (max-width: 1000px){
-        width: calc(100% - 2rem);
+        width: 100%
     }
     
     display: flex;

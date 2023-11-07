@@ -42,7 +42,7 @@
     position: fixed;
     width: 1000px;
     @media screen and (max-width: 1000px){
-        width: calc(100% - 2rem);
+        width: 100%;
     }
     margin: auto;
     bottom: 2rem;

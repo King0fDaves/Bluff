@@ -47,7 +47,7 @@
 
     top: 12rem;    
     @media screen and (max-width: 1000px){
-        width: calc(100% - 2rem);
+        width: 100%;
     } 
 
      
