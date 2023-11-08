@@ -18,19 +18,23 @@ class CallCardsEvent implements ShouldBroadcast
     private int $playerPickupId;
     private int $callerId;
     private bool $gameEnded;
-
+    private array $newCards;
     /**
      * Create a new event instance.
      */
     
-    public function __construct( int $roomId, int $playerPickupId, int $callerId,
-    bool $gameEnded)
+    public function __construct(
+        int $roomId, int $playerPickupId,
+        int $callerId, bool $gameEnded, 
+        array $newCards
+    )
 
     {      
         $this->roomId = $roomId;
         $this->playerPickupId = $playerPickupId;
         $this->callerId = $callerId;
         $this->gameEnded = $gameEnded;
+        $this->newCards = $newCards;
     }
 
     /**
@@ -56,7 +60,8 @@ class CallCardsEvent implements ShouldBroadcast
             'roomId' => $this->roomId,
             'playerPickUpId' => $this->playerPickupId,
             'callerId' => $this->callerId,
-            'gameEnded' => $this->gameEnded,    
+            'gameEnded' => $this->gameEnded,  
+            'newCards' => $this->newCards  
         
         ];
     }

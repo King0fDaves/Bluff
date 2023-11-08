@@ -69,6 +69,7 @@ onMount(() => {
             'callerId':event.callerId,
             'gameEnded':event.gameEnded,
             'playerPickupId':event.playerPickUpId,
+            'newCards':event.newCards
         })
 
     }).listen(".end-game", (event) => {

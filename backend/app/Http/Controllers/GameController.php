@@ -238,6 +238,8 @@ class GameController extends Controller
                 array_push($playerPickUpCards, $card);
             }
             
+            $newCards = array_merge($playerPickUpCards, $theStack);
+            
             $playerPickUp->update([
                 'cards'=>$playerPickUpCards
             ]);
@@ -250,7 +252,11 @@ class GameController extends Controller
                 'last_cards' => []
             ]);
 
-            event(new CallCardsEvent($room->id, $playerPickupId, $caller->id, $gameEnded));
+            event(new CallCardsEvent(
+                $room->id, $playerPickupId,
+                $caller->id, $gameEnded,
+                $newCards
+            ));
 
         } else {
             return $this->error('', 'You cannot call', 405);
