@@ -238,11 +238,17 @@ class GameController extends Controller
                 array_push($playerPickUpCards, $card);
             }
             
-            $newCards = array_merge($playerPickUpCards, $theStack);
             
             $playerPickUp->update([
                 'cards'=>$playerPickUpCards
             ]);
+
+            $newCards = [];
+
+            foreach($playerPickUpCards as $card){
+                array_push($newCards, $card);
+            }
+
 
             $room->update([
                 'turn_count' => 0,

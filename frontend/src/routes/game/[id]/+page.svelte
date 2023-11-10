@@ -91,7 +91,11 @@
     
 
     async function placeCards(event){ // To add the cards selected by the user to the currentStack
-        
+
+     
+        canCall = false,
+        yourTurn = false;
+
         const theCards = event.detail.cards
         currentLastCards = theCards
         currentStack = [...currentStack, ...theCards]
@@ -107,6 +111,7 @@
         }); 
 
         
+
         const cardInfo = {
             id:playerData.room.id,
             cards:cardIds,
@@ -124,8 +129,7 @@
         const response = await putCards(data.authToken, cardInfo);
         const responseData = await response.json();
        
-        canCall = false,
-        yourTurn = false;
+        
 
         currentPlayer = responseData;
 
@@ -147,12 +151,19 @@
     }
 
     function addCards(event){
-
+    
         const theLastPlayer = event.detail.lastPlayer;
         const theCurrentPlayer = event.detail.currentPlayer;
         const theTurn = event.detail.turn;
-
         const playerId = playerData.id;
+
+        if(theLastPlayer.id !== playerId){
+            disableSelect = true
+
+            setTimeout(() => {
+                disableSelect = false
+            })
+        }
 
 
         Turn.count = theTurn.count
@@ -162,6 +173,8 @@
 
         currentPlayer = theCurrentPlayer; 
         isLastPlayer = playerId === lastPlayer.id;
+
+        
 
         if(playerId != lastPlayer.id){
             

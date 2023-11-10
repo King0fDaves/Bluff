@@ -56,12 +56,16 @@
     display: -webkit-flex;
     align-items: center;
     justify-content: center;
-    overflow-x: hidden;
+    overflow:hidden;
+
 }
 
 .Card{
     position: absolute;
-    transform: rotate(calc(7deg * var(--cardPlace)))
+    transform: translateY(100vh);
+    animation: addCard 1s ease calc(.1s * var(--cardPlace));
+    animation-fill-mode: forwards;
+    
 }
 
 
@@ -73,8 +77,8 @@
 }
 
 .called{
-    animation: alignCard 3s cubic-bezier(0.075, 0.82, 0.165, 1);
-    transform: rotate(0deg) translateX(100vw);
+    animation: alignCard 3s cubic-bezier(0.075, 0.82, 0.165, 1) calc(.05s * var(--cardPlace));
+    animation-fill-mode: forwards;
 }
 
 
@@ -106,5 +110,21 @@
 
     }
 }
+
+
+@keyframes addCard {
+    0% {
+        transform: translateY(100vh);
+    } 
+    70% {
+        transform: rotate(0) rotate(calc(var(--cardPlace) * 7deg ));
+
+    } 100%{
+
+        transform: translateY(0) rotate(calc(var(--cardPlace) * 7deg ));
+
+    }
+}
+
 
 </style>
