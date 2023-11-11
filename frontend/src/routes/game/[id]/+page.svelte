@@ -92,7 +92,6 @@
 
     async function placeCards(event){ // To add the cards selected by the user to the currentStack
 
-     
         canCall = false,
         yourTurn = false;
 
@@ -137,34 +136,34 @@
 
     function flipCards(){
 
-        flipTheCards();
+        if(!disableSelect){
+            flipTheCards();
 
-        let callParams = {
-            id:playerData.room.id,
-            isTruth:checkCall(cardValues, Turn.value),
-            callerId:playerData.id
+            let callParams = {
+                id:playerData.room.id,
+                isTruth:checkCall(cardValues, Turn.value),
+                callerId:playerData.id
+            }
+
+            callLastStack(data.authToken, callParams);
+        
         }
-
-        callLastStack(data.authToken, callParams);
-
         
     }
 
     function addCards(event){
-    
+        
+        disableSelect = true;
+        
         const theLastPlayer = event.detail.lastPlayer;
         const theCurrentPlayer = event.detail.currentPlayer;
         const theTurn = event.detail.turn;
         const playerId = playerData.id;
 
-        if(theLastPlayer.id !== playerId){
-            disableSelect = true
-
-            setTimeout(() => {
-                disableSelect = false
-            })
-        }
-
+        setTimeout(() => {
+            disableSelect = false
+        }, 2000)
+        
 
         Turn.count = theTurn.count
         Turn.value = theTurn.value
@@ -198,7 +197,7 @@
     }
 
     function callTheCards(event){
-
+        
         const callerId = event.detail.callerId;
         const playerId = playerData.id;
         const playerPickupId = event.detail.playerPickupId;
