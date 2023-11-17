@@ -8,10 +8,13 @@
     export let selectCard;
     export let cards;
     export let Turn;
-    export let yourTurn;
 
+    const fixedValue = Turn.value;
+
+    export let yourTurn;
     export let currentCards;
 
+    let playerTurn = Turn;
 
     let cardCount = 0; // The amount of cards selected by the user
        
@@ -20,6 +23,9 @@
     const dispatch  = createEventDispatcher()
     
     function dropCardSelection(){ // Drops the card selection menu
+
+        playerTurn.value = fixedValue
+        
         dispatch('selectCard', {
             selectCard:false
         })
@@ -67,7 +73,7 @@
             {cardCount}x
         </span>
 
-        <ValueSetter Turn={Turn} yourTurn={yourTurn} />
+        <ValueSetter Turn={playerTurn} yourTurn={yourTurn} />
 
 
         <button class="dropdown" on:click={() => {dropCardSelection()}}>

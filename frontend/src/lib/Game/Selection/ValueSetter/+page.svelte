@@ -4,7 +4,8 @@
     import getLowest from "$lib/Functions/getLowest.js";
 
     export let Turn;
-    export let currentValue = Turn.value;
+    let currentValue = Turn.value;
+
     export let yourTurn;
 
     let clickedBtn = 0;
